@@ -22,7 +22,7 @@ class _CupCarScreenState extends State<CupCarScreen> {
             children: [
               const TextoConNegrita(
                 fontSize: 25,
-                texto: "Tu pedido",
+                texto: "TU COMPRA",
               ),
               const Divider(
                 color: Colors.black38,

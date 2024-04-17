@@ -1,4 +1,3 @@
-import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:cutap/presentation/screens/cuenta/cuentaScreen.dart';
 import 'package:cutap/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
@@ -54,12 +53,11 @@ class NavigationExampleState extends State<NavigationExample> {
         const Home(),
 
         /// Pedidos Page
-       CupCarScreen(),
+         
+       const CupCarScreen(),
 
         /// Consultas Page
-        Scaffold(
-        appBar: CrearAppbar("En trabajo", const Icon(Icons.home_outlined)),
-        ),
+        const PedidosScreen(),
 
         //CuentaCliente Page
         const CuentaClienteScreen()

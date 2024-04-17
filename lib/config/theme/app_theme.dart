@@ -13,7 +13,6 @@ const colorList = <Color>[
 ];
 
 
-
 class AppTheme {
 
   final int selectedColor;

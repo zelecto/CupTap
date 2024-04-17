@@ -22,7 +22,7 @@ final appRouter = GoRouter(
       path: '/Pedidos',
       builder: (context, state) =>   const CupCarScreen(),
     ),
-
     
+  
   ],
 );

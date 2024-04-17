@@ -1,4 +1,8 @@
-export 'package:cutap/presentation/screens/pedidos/pedidos_screen.dart';
+import 'package:cutap/presentation/screens/Widgets/Prueba.dart';
+
+export  'package:cutap/presentation/screens/pedidos/pedidos.dart';
+
+export 'package:cutap/presentation/screens/CupCar/cupcar_screen.dart';
 
 export  'package:cutap/presentation/screens/home/home.dart';
 

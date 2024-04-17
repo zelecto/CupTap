@@ -33,15 +33,15 @@ class NavigationExampleState extends State<NavigationExample> {
             label: 'Principal',
           ),
           NavigationDestination(
-            icon: Badge(backgroundColor: Colors.green,child: Icon(Icons.shopping_bag_outlined),),
-            label: 'Pedidos',
+            icon: Badge(backgroundColor: Colors.green,child: Icon(Icons.add_shopping_cart_sharp),),
+            label: 'CupCar',
           ),
           NavigationDestination(
             icon: Badge(
               label: Text('5'),
               child: Icon(Icons.search),
             ),
-            label: 'Messages',
+            label: 'Pedidos',
           ),
           NavigationDestination(
             icon: Icon(Icons.people),
@@ -54,7 +54,7 @@ class NavigationExampleState extends State<NavigationExample> {
         const Home(),
 
         /// Pedidos Page
-       PedidosScreen(),
+       CupCarScreen(),
 
         /// Consultas Page
         Scaffold(

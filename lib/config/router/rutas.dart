@@ -20,7 +20,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/Pedidos',
-      builder: (context, state) =>   const PedidosScreen(),
+      builder: (context, state) =>   const CupCarScreen(),
     ),
 
     

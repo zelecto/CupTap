@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/widgets.dart';
 
+
+
 class Home extends StatelessWidget {
   const Home();
+
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +103,10 @@ class MyCardProducto extends StatelessWidget {
       onTap: () {
       },
       child: Card(
-        surfaceTintColor: Colors.purple,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero, // Esto quita el borde redondeado
+        ),
+        surfaceTintColor: Colors.white,
         elevation: elevation,
         child: Padding(
           padding: const EdgeInsets.all(8.0),

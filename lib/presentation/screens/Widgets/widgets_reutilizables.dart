@@ -10,6 +10,7 @@ AppBar CrearAppbar(String subtile, Widget icono){
         TextoAppBar(subTitle: subtile),
         icono,
       ],
+      
     ),
   );
 }
@@ -27,7 +28,7 @@ class TextoAppBar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextoConNegrita(texto: "Cuptap",fontSize: 30.0),
+          const TextoConNegrita(texto: "Cuptap",fontSize: 30.0),
           Text(
             subTitle,
             style: const TextStyle(fontSize: 20),

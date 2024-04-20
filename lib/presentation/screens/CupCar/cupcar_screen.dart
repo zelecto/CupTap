@@ -1,5 +1,6 @@
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class CupCarScreen extends StatefulWidget {
   const CupCarScreen({super.key});
@@ -52,19 +53,22 @@ class _CupCarScreenState extends State<CupCarScreen> {
               Container(
                 
                 constraints: const BoxConstraints(maxWidth: double.infinity),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    FilledButton(
-                      onPressed: () {},
-                      child: const Text("RESERVAR"),
-                    ),
-                    const SizedBox(width: 5),
-                    FilledButton(
-                      onPressed: () {},
-                      child: const Text("PAGAR"),
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      FilledButton(
+                        onPressed: () {},
+                        child: const Text("RESERVAR"),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        onPressed: () {},
+                        child: const Text("PAGAR"),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -81,18 +85,24 @@ class _MyCardPedido extends StatelessWidget {
   final double precioCobrar;
   final double totalPagar;
   final int cantidadVendida;
+  
 
-  const _MyCardPedido(this.nameProduct, this.imgUrl, this.precioCobrar,
-      this.totalPagar, this.cantidadVendida);
+  const _MyCardPedido(
+    this.nameProduct, 
+    this.imgUrl, 
+    this.precioCobrar,
+    this.totalPagar, this.cantidadVendida
+  );
 
   @override
   Widget build(BuildContext context) {
+    final double widthDisponible = MediaQuery.of(context).size.width;
+    final double heightDisponible = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: double.infinity,
-      height: 210,
+      height: heightDisponible*0.24,
       child: Card(
         surfaceTintColor: Colors.white,
-        elevation: 8,
+        elevation: 5,
         child: Column(
           children: [
             Row(
@@ -101,14 +111,14 @@ class _MyCardPedido extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: SizedBox(
-                    width: 170,
-                    height: 120,
+                    width: widthDisponible*0.40,
+                    height: heightDisponible*0.13,
                     child: Image.network(imgUrl, fit: BoxFit.cover),
                   ),
                 ),
                 SizedBox(
-                  width: 170,
-                  height: 130,
+                  width: widthDisponible*0.40,
+                  height: widthDisponible*0.34,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -122,18 +132,20 @@ class _MyCardPedido extends StatelessWidget {
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
+                      //Pie de tarjeta
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          
                           IconButton(
                               onPressed: () {},
                               icon: const Icon(
                                   Icons.remove_circle_outline_rounded)),
-                          const SizedBox(
-                            width: 50,
-                            height: 30,
-                            child: TextField(
+                          SizedBox(
+                            width: widthDisponible*0.08,
+                            height: heightDisponible*0.02,
+                            child: const TextField(
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
                             ),
@@ -153,18 +165,32 @@ class _MyCardPedido extends StatelessWidget {
               color: Colors.black54,
               thickness: 3,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                  child: Text(
-                    "SubTotal:   $totalPagar",
-                    style: const TextStyle(fontSize: 19),
-                  ),
-                )
-              ],
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FilledButton(
+                      onPressed: () {
+                      //TODO metodo de eliminacion
+                    }, 
+                    child: Text("Eliminar"),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.redAccent
+                      
+                    ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      "SubTotal:   $totalPagar ",
+                      style: const TextStyle(fontSize: 19),
+                    ),
+                    const Icon(Icons.monetization_on_outlined,)
+                  ],
+                ),
+              ),
             )
           ],
         ),

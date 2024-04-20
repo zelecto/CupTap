@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 
 
 class Home extends StatelessWidget {
-  const Home();
+  const Home({super.key});
 
 
   @override
@@ -24,7 +24,7 @@ class Home extends StatelessWidget {
                   fontSize: 25,
                 ),
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 8),
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 8),
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'Buscar...',
@@ -41,17 +41,15 @@ class Home extends StatelessWidget {
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 30,
+              mainAxisSpacing: 3,
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 final card = cards[index];
-                return MyCardProducto(
+                return _MyCardProducto(
                   card['imgUrl'],
                   card['label'],
                   card['Disiponible'],
-                  card['elevation'],
                 );
               },
               childCount: cards.length,
@@ -87,51 +85,56 @@ const cards = <Map<String, dynamic>>[
 ];
 
 
-class MyCardProducto extends StatelessWidget {
+class _MyCardProducto extends StatelessWidget {
   final String imgUrl;
   final String title;
   final int number;
-  final double elevation;
-
   
-  const MyCardProducto(this.imgUrl, this.title, this.number, this.elevation);
+
+  const _MyCardProducto(this.imgUrl, this.title, this.number);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      
-      onTap: () {
-      },
-      child: Card(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero, // Esto quita el borde redondeado
-        ),
-        surfaceTintColor: Colors.white,
-        elevation: elevation,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Image.network(
-                imgUrl,
-                fit: BoxFit.contain,
-                width: 100,
-                height: 115,
-              ),
-              const SizedBox(height: 8),
-               Align(
-                alignment: Alignment.bottomCenter,
-                 child: Text(
+    
+    final double heightDisponible =  MediaQuery.of(context).size.height;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: InkWell(
+        onTap: () {
+        },
+        child: Card(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero, // Esto quita el borde redondeado
+          ),
+          surfaceTintColor: Colors.white,
+          elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height:  heightDisponible*0.15,
                   
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  child: Image.network(
+                    imgUrl,
+                    fit: BoxFit.cover,
                   ),
-                               ),
-               ),
-            ],
+                ),
+                const Spacer(),
+                 Align(
+                  alignment: Alignment.bottomCenter,
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                 ),
+              ],
+            ),
           ),
         ),
       ),
@@ -145,28 +148,15 @@ class _ConsultarArticulosView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 15),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const TextoConNegrita(
+          TextoConNegrita(
             texto: "Nuestra lista de artículos",
             fontSize: 25,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: TextButton(
-              onPressed: () {
-      
-              },
-              style: const ButtonStyle(
-              ),
-              child: const Text(
-                "Ver todo",
-                style: TextStyle(decoration: TextDecoration.underline),
-              ),
-            ),
-          )
         ],
       ),
     );

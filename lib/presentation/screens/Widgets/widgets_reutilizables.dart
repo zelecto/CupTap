@@ -1,16 +1,14 @@
-
-
 import 'package:flutter/material.dart';
 
 AppBar CrearAppbar(String subtile, Widget icono){
   return  AppBar(
+    
     centerTitle: true,
     title:  Row(
       children: [
         TextoAppBar(subTitle: subtile),
         icono,
       ],
-      
     ),
   );
 }

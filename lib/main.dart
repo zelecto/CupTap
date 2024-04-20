@@ -1,3 +1,4 @@
+import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/config/router/rutas.dart';
 import 'package:cutap/config/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Manejador del tamño de la pantalla
+    ScreenSize.init(context);
     return MaterialApp.router(
       title: 'Cup-Tap',
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
-       theme: AppTheme(selectedColor: 5).getTheme(),
+      theme: AppTheme(selectedColor: 5).getTheme(),
+      
+        
     );
   }
 }

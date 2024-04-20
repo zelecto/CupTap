@@ -4,7 +4,7 @@ import 'package:cutap/presentation/screens/screens.dart';
 
 // GoRouter configuration
 final appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/Pedidos',
   routes: [
     GoRoute(
       path: '/',
@@ -19,8 +19,12 @@ final appRouter = GoRouter(
       builder: (context, state) =>   const NavigationExample(),
     ),
     GoRoute(
-      path: '/Pedidos',
+      path: '/CupcarScreen',
       builder: (context, state) =>   const CupCarScreen(),
+    ),
+    GoRoute(
+      path: '/Pedidos',
+      builder: (context, state) =>   const PedidosScreen(),
     ),
     
   

@@ -4,7 +4,6 @@ import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
 
-
 class PedidosScreen extends StatefulWidget {
   const PedidosScreen({super.key});
 
@@ -39,20 +38,18 @@ class _PedidosScreenState extends State<PedidosScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: currentPageIndex != 0
-              ? const TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Buscar...',
-                    prefixIcon: Icon(Icons.search),
-                  ),
-                )
-              : const Text(""),
-            ),
-          
-
+                ? const TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Buscar...',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                  )
+                : const Text(""),
+          ),
           Padding(
             padding: const EdgeInsets.all(15),
             child: currentPageIndex == 0
-                ?  _MyCardPedido()
+                ? _MyCardPedido()
                 : const Text("Destruir mundo"),
           )
         ],
@@ -63,61 +60,65 @@ class _PedidosScreenState extends State<PedidosScreen> {
 
 class _MyCardPedido extends StatelessWidget {
   _MyCardPedido();
-  
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      elevation: 5,
-      child: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(15),
-            child: Row(
-              children: [
-                Text("#Pedido : 100"),
-                Spacer(),
-                Text("Fecha : 20-04-2024"),
-              ],
+    return InkWell(
+      onTap: () {
+        _cancelarScroll();
+      },
+      child: Card(
+        color: Colors.white,
+        elevation: 5,
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  Text("#Pedido : 100"),
+                  Spacer(),
+                  Text("Fecha : 20-04-2024"),
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              height: ScreenSize.screenHeight * 0.25,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                    ),
+                    onPressed: () {
+                      _controller.previousPage(
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.decelerate);
+                      _cancelarScroll();
+                    },
+                  ),
+                  //TODO Aqui la lista de las ventas
+                  const _DetallePedidoReelView(),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_forward_ios_outlined,
+                    ),
+                    onPressed: () {
+                      _controller.nextPage(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.decelerate,
+                      );
+                      _cancelarScroll();
+                    },
+                  ),
+                ],
+              ),
+            ),
             
-            height: ScreenSize.screenHeight * 0.25,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new,
-                  ),
-                  
-                  onPressed: () {
-                    _controller.previousPage (
-                        duration: Duration(milliseconds: 400),
-                        curve: Curves.decelerate);
-                  },
-                ),
-                //TODO Aqui la lista de las ventas
-                 const _DetallePedidoReelView(),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_forward_ios_outlined,
-                  ),
-                  
-                  onPressed: () {
-                    _controller.nextPage(
-                        duration: Duration(milliseconds: 400),
-                        curve: Curves.decelerate
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -129,42 +130,40 @@ class _DetallePedidoReelView extends StatefulWidget {
   @override
   State<_DetallePedidoReelView> createState() => _DetallePedidoReelViewState();
 }
-final PageController _controller = PageController();
-class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
-  int _currentPage = 0;
-  late Timer _timer;
 
+
+class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
+  
   @override
   void initState() {
     super.initState();
-    // Iniciar el temporizador para cambiar automáticamente la página cada 3 segundos
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
-      if (_currentPage < productos.length) {
-        // Cambiar a la siguiente página
-        _currentPage++;
-        _controller.animateToPage(_currentPage,
-            duration: Duration(milliseconds: 500), curve: Curves.ease);
-      } else {
-        // Si es la última página, volver a la primera página
-        _currentPage = 0;
-        _controller.animateToPage(_currentPage,
-            duration: Duration(milliseconds: 500), curve: Curves.ease);
-      }
-    });
+    _starScrollTimer();
+  }
+
+  @override
+  void dispose() {
+    // Cancelar el temporizador al salir de la página
+    _timer?.cancel();
+    _timerdetectarInactividad?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
         width: ScreenSize.screenWidth * 0.66,
-        
         child: PageView.builder(
           controller: _controller,
           itemCount: productos.length,
+          onPageChanged: (value) {
+            _currentPage = value;
+            
+          },
           itemBuilder: (context, index) => Column(children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 2),
-              child: TextoConNegrita(texto: productos[index]["nombre"], fontSize: 20),
+              child: TextoConNegrita(
+                  texto: productos[index]["nombre"], fontSize: 20),
             ),
             Container(
               padding: const EdgeInsets.all(2),
@@ -175,17 +174,14 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
                 fit: BoxFit.cover, //Imagen adaptativa
               ),
             ),
-             Expanded(
-               child: Row(
-                  children: [
-               
-                    Text("Cantidad : ${productos[index]["cantidadVenta"]}"),
-                    const Spacer(),
-                    Text("Precio ${productos[index]["precio"]}"),
-                    
-                  ]
-                ),
-             ),
+            
+            Expanded(
+              child: Row(children: [
+                Text("Cantidad : ${productos[index]["cantidadVenta"]}"),
+                const Spacer(),
+                Text("Precio ${productos[index]["precio"]}"),
+              ]),
+            ),
           ]),
         ));
   }
@@ -233,3 +229,52 @@ List<Map<String, dynamic>> productos = [
     'subtotal': 24000,
   },
 ];
+
+
+//Controladores global del scroll
+int _currentPage = 1;
+final PageController _controller = PageController();
+Timer? _timer;
+Timer? _timerdetectarInactividad;
+bool _comprovarInactividad = false;
+bool _detenerScroll = false;
+
+void _cancelarScroll() {
+  _comprovarInactividad = true;
+  _detenerScroll = true;
+
+  _timer?.cancel(); // Cancelar el temporizador de desplazamiento
+  _timerdetectarInactividad
+      ?.cancel(); // Cancelar el temporizador de detección de inactividad
+  _detectarInactividad(); // Reiniciar la detección de inactividad
+}
+
+void _starScrollTimer() {
+  if (!_detenerScroll) {
+    _comprovarInactividad = false;
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (_currentPage < productos.length) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      _controller.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.ease,
+      );
+    });
+  }
+}
+
+void _detectarInactividad() {
+  if (_comprovarInactividad) {
+    _timerdetectarInactividad = Timer.periodic(Duration(seconds: 6), (timer) {
+      if (_detenerScroll) {
+        _detenerScroll = false;
+        print("Detener Scroll: $_detenerScroll");
+        _starScrollTimer(); // Reiniciar el temporizador de desplazamiento
+      }
+    });
+  }
+}

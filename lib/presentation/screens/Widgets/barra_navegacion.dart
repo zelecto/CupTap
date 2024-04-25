@@ -50,7 +50,7 @@ class NavigationExampleState extends State<NavigationExample> {
       ),
       body: <Widget>[
         /// Home page
-        const Home(),
+        Home(),
 
         /// Pedidos Page
          

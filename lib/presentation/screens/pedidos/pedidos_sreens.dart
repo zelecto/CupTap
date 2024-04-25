@@ -227,7 +227,7 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Image.network(
-                          widget.listaVentas[index].producto.imgUrl,
+                          widget.listaVentas[index].producto.imgUrl ??  "Imagen por defecto"  ,
                           fit: BoxFit.fill, //Imagen adaptativa
                         ),
                       ),

@@ -15,6 +15,7 @@ List<VentaProducto> listaVentasProductos = [
       stock: 50,
       imgUrl:
           'https://www.portafolio.co/files/article_new_multimedia/uploads/2021/11/20/6199a09028f1d.jpeg',
+          ventaActiva: true
     ),
   ),
   VentaProducto(
@@ -27,6 +28,7 @@ List<VentaProducto> listaVentasProductos = [
       stock: 40,
       imgUrl:
           'https://www.portafolio.co/files/article_new_multimedia/uploads/2021/11/20/6199a09028f1d.jpeg',
+          ventaActiva: true
     ),
   ),
   // Puedes agregar más ventas de productos si es necesario
@@ -40,6 +42,7 @@ List<Pedido> listaPedidosPrueba = [
     estadoPedido: estadoPedidoPendiete,
     ventaProducto: listaVentasProductos,
     total: calcularTotal(listaVentasProductos),
+    
   ),
   Pedido(
     id: 2,

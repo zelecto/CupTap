@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//TODO Arreglar el tamaño del texto del adbar
 AppBar CrearAppbar(String subtile, Widget icono){
   return  AppBar(
     

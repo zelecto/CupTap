@@ -5,5 +5,5 @@ export 'package:cutap/presentation/screens/CupCar/cupcar_screen.dart';
 
 export  'package:cutap/presentation/screens/home/home.dart';
 
-export 'package:cutap/presentation/screens/inicio_sesion/inicio_sesion.dart';
+export 'package:cutap/presentation/screens/login/login_screen.dart';
 

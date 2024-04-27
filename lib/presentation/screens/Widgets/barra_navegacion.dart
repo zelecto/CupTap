@@ -22,7 +22,7 @@ class NavigationExampleState extends State<NavigationExample> {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.purple.shade100,
+        indicatorColor: Colors.blue.shade100,
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(

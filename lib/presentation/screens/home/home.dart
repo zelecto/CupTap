@@ -1,12 +1,15 @@
+
+
 import 'package:cutap/Base/producto/consulta_producto.dart';
 import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/entity/producto/producto.dart';
 import 'package:flutter/material.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 
+
+
 class Home extends StatefulWidget {
-   Home({super.key});
-  
+  Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -14,42 +17,36 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final GetProducto _getProducto = GetProducto();
-  List<Producto> _listaProductos=[];
-  
+  List<Producto> _listaProductos = [];
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
   }
-  
-  @override
-  void initState()  {
-    _fetchData();
-    super.initState();
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
   }
-  
 
   Future<void> _fetchData() async {
     final datos = await _getProducto.getAllProducts();
-    setState(() {
-      _listaProductos= datos;
-      _listaProductos.forEach((element) { print(element.nombre);});
-    });
-    
+    if (mounted)
+      setState(() {
+        _listaProductos = datos;
+      });
   }
-
 
   @override
   Widget build(BuildContext context) {
-    
-    
     return Scaffold(
       appBar: CrearAppbar("Home", const Icon(Icons.home_outlined)),
       body: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const TextoConNegrita(
@@ -57,7 +54,7 @@ class _HomeState extends State<Home> {
                   fontSize: 25,
                 ),
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 8),
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'Buscar...',
@@ -66,22 +63,17 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 const _ConsultarArticulosView(),
-                const SizedBox(height: 5),
               ]),
             ),
           ),
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 15,
-              childAspectRatio: 0.85
-            ),
+                crossAxisCount: 2, mainAxisSpacing: 20, childAspectRatio: 0.85),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                final card = _listaProductos[index];
                 return _MyCardProducto(
-                   imgDefault[index],
-                   card.nombre,
+                  imgUrl: imgDefault[index],
+                  producto: _listaProductos[index],
                 );
               },
               childCount: _listaProductos.length,
@@ -95,54 +87,82 @@ class _HomeState extends State<Home> {
 
 class _MyCardProducto extends StatelessWidget {
   final String imgUrl;
-  final String title;
-  
+  final Producto producto;
 
-  const _MyCardProducto(this.imgUrl, this.title, );
+  const _MyCardProducto({
+    required this.imgUrl,
+    required this.producto,
+  });
 
   @override
   Widget build(BuildContext context) {
-    
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15)
-        ),
-        
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.white
+          ),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              height: ScreenSize.screenHeight * 0.18,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(
+                  imgUrl,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            
+            Positioned(
+              right: 0,
+              child: Container(
+                width: ScreenSize.screenWidth*0.08,
+                height: ScreenSize.screenHeight*0.04,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
+                  color: Colors.white,
+                ),
+                child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.add_circle_outline_outlined,size: 20,color: Color.fromARGB(255, 6, 229, 13),)),
+              ),
+            ),
+
+            Positioned(
+              bottom: 0,
+              child: SizedBox(
+                width: ScreenSize.screenWidth*0.50,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    
+                    children: [
+                      Center(child: TextoConNegrita(texto: producto.nombre.toUpperCase(), fontSize: 20)),
+                        Text("${producto.stock} Disponible",
+                          style:  TextStyle(fontSize: 15,color: Colors.grey.shade500),
+                        ),
+                        Row(
+                          children: [
+                            TextoConNegrita(texto: "${producto.precio}",fontSize: 15,color: Colors.blue,),
+                            const Icon(Icons.attach_money_rounded,size: 15,color: Colors.blue,)
+                          ],
+                        )
+                      ],
                   ),
                 ),
               ),
-              SizedBox(
-                height: ScreenSize.screenHeight * 0.15,
-                child: Image.network(
-                  imgUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const Spacer(),
-              TextButton.icon(onPressed: (){}, 
-                icon: Icon(Icons.add_box_outlined,color: Colors.white,), 
-                label: Text("Agregar",style: TextStyle(color: Colors.white),),
-                style:  TextButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-              ),
-            ],
-          ),
+            )
+          
+          ],
+
+          
         ),
       ),
     );
@@ -166,9 +186,22 @@ class _ConsultarArticulosView extends StatelessWidget {
   }
 }
 
-//Datos de prueba
+// class _BottomSheetsAgregarVenta extends StatelessWidget {
+//   final Producto producto;
+//   const _BottomSheetsAgregarVenta({required this.producto});
 
-const List<String> imgDefault=[
+//   @override
+//   Widget build(BuildContext context) {
+//     return const ButtomShett();
+//   }
+// }
+
+
+
+
+
+//Datos de prueba 
+const List<String> imgDefault = [
   "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGSZU9NZXEIFylmIrCbu7D6L9g8vxRAooAWw&usqp=CAU",
   "https://i.pinimg.com/736x/f9/d9/e9/f9d9e911bf866cbe7c9d8f2640eb2652.jpg",

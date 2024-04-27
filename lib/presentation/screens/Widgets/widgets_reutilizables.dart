@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 //TODO Arreglar el tamaño del texto del adbar
@@ -41,8 +43,9 @@ class TextoAppBar extends StatelessWidget {
 class TextoConNegrita extends StatelessWidget {
   final String texto;
   final double fontSize;
+  final Color? color;
   const TextoConNegrita({
-    super.key, required this.texto, required this.fontSize,
+    super.key, required this.texto, required this.fontSize, this.color=Colors.black,
   });
 
   @override
@@ -52,6 +55,7 @@ class TextoConNegrita extends StatelessWidget {
       style:  TextStyle(
         fontWeight: FontWeight.bold, // Negrita
         fontSize: fontSize, // Tamaño de fuente
+        color: color
       ),
     );
   }

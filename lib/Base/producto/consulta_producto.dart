@@ -11,8 +11,6 @@ class GetProducto {
 
     final response = await dio.get(url);
     var listaProductos = List<Producto>.from(response.data["data"].map((x) => Producto.fromJson(x)));
-    listaProductos.forEach((element) {print(element.nombre);});
-
     return listaProductos;
 
   }

@@ -1,7 +1,11 @@
 // import 'package:dio/dio.dart';
-import 'package:cutap/config/api/api_request.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cutap/infrastructure/models/usuarios_model.dart';
+// import 'package:cutap/config/api/api_request.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,26 +18,27 @@ class LoginScreen extends StatefulWidget {
 class _LoginState extends State<LoginScreen> {
   //Controladores de los text fields.
   final dio = Dio();
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   Future signIn() async {
-    // final response = await dio
-    var apiRequest = ApiRequest(
-        methodType: "get",
-        endpoint: "https://cuptapapi.onrender.com/v1/Usuarios",
-        data: null);
+    final db = FirebaseFirestore.instance;
+    List<Usuario> usuarios = await db.collection("admins").get().then((value) =>
+        value.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
-    var response = await apiRequest.request();
+    String username = _usernameController.text;
+    String password = _passwordController.text;
 
-    apiRequest.loading.listen((isLoading){
-      if(isLoading){
-        print('Cargando...');
-      }else{
-        print(response);
+    try {
+      if (usuarios.any((usuario) =>
+          usuario.username == username && usuario.password == password)) {
+        if (mounted) {
+          context.go("/barraNavegacion");
+        }
       }
-    });
-
+    } catch (err) {
+      print(err);
+    }
   }
 
   @override
@@ -78,7 +83,7 @@ class _LoginState extends State<LoginScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: _emailController,
+                      controller: _usernameController,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Nombre de usuario',
@@ -151,7 +156,34 @@ class _LoginState extends State<LoginScreen> {
                         color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ],
-              )
+              ),
+
+              const SizedBox(height: 25),
+
+              //Enlace a la pantalla de home ( inicio de sesion sin usuario )
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                        margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: Divider(
+                          color: Colors.grey[800],
+                          height: 36,
+                        )),
+                  ),
+                  const Text("O continúa sin usuario"),
+                  Expanded(
+                    child: Container(
+                        margin: const EdgeInsets.only(left: 10, right: 10.0),
+                        child: Divider(
+                          color: Colors.grey[800],
+                          height: 36,
+                        )),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

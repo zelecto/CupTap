@@ -1,9 +1,15 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/config/router/rutas.dart';
 import 'package:cutap/config/theme/app_theme.dart';
+import 'package:cutap/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MainApp());
 }
 
@@ -19,8 +25,6 @@ class MainApp extends StatelessWidget {
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       theme: AppTheme(selectedColor: 5).getTheme(),
-      
-        
     );
   }
 }

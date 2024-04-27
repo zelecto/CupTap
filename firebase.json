@@ -1,0 +1,25 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "admin-users-cuptap",
+          "appId": "1:50254635250:android:0e31fa250af3113068f06b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "admin-users-cuptap",
+          "configurations": {
+            "android": "1:50254635250:android:0e31fa250af3113068f06b",
+            "ios": "1:50254635250:ios:745bcd4c13bc268c68f06b",
+            "macos": "1:50254635250:ios:745bcd4c13bc268c68f06b",
+            "web": "1:50254635250:web:a345a71448052ff068f06b",
+            "windows": "1:50254635250:web:00bfebf646841d9068f06b"
+          }
+        }
+      }
+    }
+  }
+}

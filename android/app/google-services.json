@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50254635250",
+    "project_id": "admin-users-cuptap",
+    "storage_bucket": "admin-users-cuptap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50254635250:android:0e31fa250af3113068f06b",
+        "android_client_info": {
+          "package_name": "com.example.cutap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3Ev9Qk_l9HgPPQYWe1VynnWjsHllP1MY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

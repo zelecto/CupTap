@@ -1,11 +1,8 @@
-
-
 import 'package:cutap/Base/producto/consulta_producto.dart';
 import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/entity/producto/producto.dart';
 import 'package:flutter/material.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
-
 
 
 class Home extends StatefulWidget {
@@ -85,7 +82,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-class _MyCardProducto extends StatelessWidget {
+class _MyCardProducto extends StatefulWidget {
   final String imgUrl;
   final Producto producto;
 
@@ -95,14 +92,17 @@ class _MyCardProducto extends StatelessWidget {
   });
 
   @override
+  State<_MyCardProducto> createState() => _MyCardProductoState();
+}
+
+class _MyCardProductoState extends State<_MyCardProducto> {
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.white
-          ),
+            borderRadius: BorderRadius.circular(15), color: Colors.white),
         child: Stack(
           children: [
             Container(
@@ -113,58 +113,197 @@ class _MyCardProducto extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
-                  imgUrl,
+                  widget.imgUrl,
                   fit: BoxFit.fill,
                 ),
               ),
             ),
-            
             Positioned(
               right: 0,
               child: Container(
-                width: ScreenSize.screenWidth*0.08,
-                height: ScreenSize.screenHeight*0.04,
+                width: ScreenSize.screenWidth * 0.08,
+                height: ScreenSize.screenHeight * 0.04,
                 decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
+                  borderRadius:
+                      BorderRadius.horizontal(left: Radius.circular(10)),
                   color: Colors.white,
                 ),
                 child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.add_circle_outline_outlined,size: 20,color: Color.fromARGB(255, 6, 229, 13),)),
+                    onPressed: () {
+                      _realizarPedidoScreen(context);
+                    },
+                    icon: const Icon(
+                      Icons.add_circle_outline_outlined,
+                      size: 20,
+                      color: Color.fromARGB(255, 6, 229, 13),
+                    )),
               ),
             ),
-
             Positioned(
               bottom: 0,
               child: SizedBox(
-                width: ScreenSize.screenWidth*0.50,
+                width: ScreenSize.screenWidth * 0.50,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    
-                    children: [
-                      Center(child: TextoConNegrita(texto: producto.nombre.toUpperCase(), fontSize: 20)),
-                        Text("${producto.stock} Disponible",
-                          style:  TextStyle(fontSize: 15,color: Colors.grey.shade500),
-                        ),
-                        Row(
-                          children: [
-                            TextoConNegrita(texto: "${producto.precio}",fontSize: 15,color: Colors.blue,),
-                            const Icon(Icons.attach_money_rounded,size: 15,color: Colors.blue,)
-                          ],
-                        )
-                      ],
-                  ),
+                  child: _DatosProducto(nombre: widget.producto.nombre, stock: widget.producto.stock, precio: widget.producto.precio),
                 ),
               ),
             )
-          
           ],
-
-          
         ),
       ),
+    );
+  }
+
+  Future<dynamic> _realizarPedidoScreen(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        height: ScreenSize.screenHeight * 0.30,
+        width: ScreenSize.screenWidth,
+        child: _AgregarDetalleView(contexto: widget),
+      ),
+    );
+  }
+}
+
+class _AgregarDetalleView extends StatefulWidget {
+  final _MyCardProducto contexto;
+  int cantidadventa = 1;
+  late double subTotal;
+
+  _AgregarDetalleView({
+    required this.contexto,
+  });
+
+  @override
+  State<_AgregarDetalleView> createState() => _AgregarDetalleViewState();
+}
+
+class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
+  void calcularSubtotal() {
+    widget.subTotal = widget.contexto.producto.precio * widget.cantidadventa;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    calcularSubtotal();
+    return Column(
+      children: [
+        const TextoConNegrita(texto: "Agregar a CupCar ", fontSize: 30),
+        const Divider(
+          thickness: 2,
+        ),
+        Row(
+          children: [
+            SizedBox(
+              height: ScreenSize.screenHeight * 0.1,
+              width: ScreenSize.screenWidth * 0.3,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(
+                  widget.contexto.imgUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                height: ScreenSize.screenHeight * 0.1,
+                child: _DatosProducto( 
+                  nombre: widget.contexto.producto.nombre,
+                  stock: widget.contexto.producto.stock-widget.cantidadventa,
+                  precio: widget.subTotal
+                )),
+            IconButton(
+                onPressed: () {
+                  if (widget.cantidadventa > 1) {
+                    setState(() {
+                      widget.cantidadventa--;
+                      calcularSubtotal();
+                    });
+                  }
+                },
+                icon: const Icon(Icons.remove_outlined)),
+            Text(
+              "${widget.cantidadventa}",
+              style: const TextStyle(fontSize: 20),
+            ),
+            IconButton(
+                onPressed: () {
+                  if (widget.cantidadventa < widget.contexto.producto.stock) {
+                    setState(() {
+                      widget.cantidadventa++;
+                      calcularSubtotal();
+                    });
+                  }
+                },
+                icon: const Icon(Icons.add))
+          ],
+        ),
+        
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Row(
+            children: [
+              FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("CANCELAR")),
+              const Spacer(),
+              FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("AGREGAR")),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _DatosProducto extends StatelessWidget {
+  final String nombre;
+  final int stock;
+  final double precio;
+  const _DatosProducto({
+    required this.nombre, required this.stock, required this.precio,
+  });
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+            child: TextoConNegrita(
+                texto: nombre.toUpperCase(), fontSize: 20)),
+        Text(
+          "$stock Disponible",
+          style: TextStyle(fontSize: 15, color: Colors.grey.shade500),
+        ),
+        Row(
+          children: [
+            TextoConNegrita(
+              texto: "$precio",
+              fontSize: 15,
+              color: Colors.blue,
+            ),
+            const Icon(
+              Icons.attach_money_rounded,
+              size: 15,
+              color: Colors.blue,
+            )
+          ],
+        )
+      ],
     );
   }
 }
@@ -186,21 +325,7 @@ class _ConsultarArticulosView extends StatelessWidget {
   }
 }
 
-// class _BottomSheetsAgregarVenta extends StatelessWidget {
-//   final Producto producto;
-//   const _BottomSheetsAgregarVenta({required this.producto});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const ButtomShett();
-//   }
-// }
-
-
-
-
-
-//Datos de prueba 
+//Datos de prueba
 const List<String> imgDefault = [
   "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGSZU9NZXEIFylmIrCbu7D6L9g8vxRAooAWw&usqp=CAU",

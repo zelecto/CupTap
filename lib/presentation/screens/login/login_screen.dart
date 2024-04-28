@@ -1,6 +1,7 @@
 // import 'package:dio/dio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cutap/infrastructure/models/usuarios_model.dart';
+import 'package:cutap/presentation/widgets/square_tile.dart';
 // import 'package:cutap/config/api/api_request.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class _LoginState extends State<LoginScreen> {
             children: [
               //Logo
               Image.asset('assets/images/CupTapLogo.png',
-                  width: 200, height: 200),
+                  width: 150, height: 150),
               // Mensajes de bienvenida
               Text(
                 'Bienvenido',
@@ -142,6 +143,60 @@ class _LoginState extends State<LoginScreen> {
 
               const SizedBox(height: 25),
 
+              //Enlace a la pantalla de home ( inicio de sesion sin usuario )
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                        margin: const EdgeInsets.only(left: 30.0, right: 10.0),
+                        child: Divider(
+                          color: Colors.grey[800],
+                          height: 36,
+                        )),
+                  ),
+                  const Text(
+                    "O continúa con",
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                  Expanded(
+                    child: Container(
+                        margin: const EdgeInsets.only(left: 10, right: 30),
+                        child: Divider(
+                          color: Colors.grey[800],
+                          height: 36,
+                        )),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 25),
+
+              //Botones de inicio de sesion
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //Google Button
+                  SquareTile(imagePath: "assets/images/google_logo.png"),
+
+                  SizedBox(width: 20),
+
+                  //GitHub Button
+                  SquareTile(imagePath: "assets/images/github_logo.png"),
+
+                  SizedBox(width: 20),
+
+                  //GitHub Button
+                  SquareTile(imagePath: "assets/images/incognito_logo.png"),
+                ],
+              ),
+
+              const SizedBox(height: 25),
+
               //Enlace a la pantalla de registro para los nuevos usuarios
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -154,33 +209,6 @@ class _LoginState extends State<LoginScreen> {
                     ' ¡Registrate ahora!',
                     style: TextStyle(
                         color: Colors.blue, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 25),
-
-              //Enlace a la pantalla de home ( inicio de sesion sin usuario )
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Container(
-                        margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.grey[800],
-                          height: 36,
-                        )),
-                  ),
-                  const Text("O continúa sin usuario"),
-                  Expanded(
-                    child: Container(
-                        margin: const EdgeInsets.only(left: 10, right: 10.0),
-                        child: Divider(
-                          color: Colors.grey[800],
-                          height: 36,
-                        )),
                   ),
                 ],
               ),

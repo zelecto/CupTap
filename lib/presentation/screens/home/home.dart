@@ -159,7 +159,7 @@ class _MyCardProductoState extends State<_MyCardProducto> {
     return showModalBottomSheet(
       context: context,
       builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
         height: ScreenSize.screenHeight * 0.30,
         width: ScreenSize.screenWidth,
         child: _AgregarDetalleView(contexto: widget),
@@ -186,6 +186,8 @@ class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
     widget.subTotal = widget.contexto.producto.precio * widget.cantidadventa;
   }
 
+  TextStyle styleTextButton=const TextStyle(fontSize: 15,fontWeight: FontWeight.w600);
+
   @override
   Widget build(BuildContext context) {
     calcularSubtotal();
@@ -194,6 +196,7 @@ class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
         const TextoConNegrita(texto: "Agregar a CupCar ", fontSize: 30),
         const Divider(
           thickness: 2,
+          height: 25,
         ),
         Row(
           children: [
@@ -248,18 +251,18 @@ class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
           child: Row(
             children: [
               FilledButton(
-                  style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                  style: FilledButton.styleFrom(backgroundColor: Colors.red,),
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text("CANCELAR")),
+                  child:Text("Cancelar",style: styleTextButton,),),
               const Spacer(),
               FilledButton(
                   style: FilledButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text("AGREGAR")),
+                  child: Text("Agregar",style:  styleTextButton)),
             ],
           ),
         )
@@ -284,7 +287,7 @@ class _DatosProducto extends StatelessWidget {
       children: [
         Center(
             child: TextoConNegrita(
-                texto: nombre.toUpperCase(), fontSize: 20)),
+                texto: nombre, fontSize: 20)),
         Text(
           "$stock Disponible",
           style: TextStyle(fontSize: 15, color: Colors.grey.shade500),

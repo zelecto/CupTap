@@ -160,7 +160,7 @@ class _MyCardProductoState extends State<_MyCardProducto> {
       context: context,
       builder: (context) => Container(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-        height: ScreenSize.screenHeight * 0.30,
+        height: ScreenSize.screenHeight * 0.28,
         width: ScreenSize.screenWidth,
         child: _AgregarDetalleView(contexto: widget),
       ),
@@ -186,7 +186,7 @@ class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
     widget.subTotal = widget.contexto.producto.precio * widget.cantidadventa;
   }
 
-  TextStyle styleTextButton=const TextStyle(fontSize: 15,fontWeight: FontWeight.w600);
+  TextStyle styleTextButton=const TextStyle(fontSize: 18,fontWeight: FontWeight.w600);
 
   @override
   Widget build(BuildContext context) {
@@ -251,14 +251,14 @@ class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
           child: Row(
             children: [
               FilledButton(
-                  style: FilledButton.styleFrom(backgroundColor: Colors.red,),
+                  style: FilledButton.styleFrom(backgroundColor: Colors.red.shade700,),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   child:Text("Cancelar",style: styleTextButton,),),
               const Spacer(),
               FilledButton(
-                  style: FilledButton.styleFrom(backgroundColor: Colors.green),
+                  style: FilledButton.styleFrom(backgroundColor: Colors.green.shade700),
                   onPressed: () {
                     Navigator.pop(context);
                   },

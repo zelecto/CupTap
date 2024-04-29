@@ -20,7 +20,7 @@ class HomeState extends ConsumerState<Home> {
     late List<Producto> listaProductos;
     final productosAsync = ref.watch(consultaProductosProvider);
     return Scaffold(
-        appBar: CrearAppbar("Home", const Icon(Icons.home_outlined)),
+        appBar: crearAppbar("Home", const Icon(Icons.home_outlined)),
         body: productosAsync.when(
             data: (data) {
               listaProductos = data;
@@ -99,16 +99,15 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Container(
-        decoration: BoxDecoration(
-            boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.2), 
-        spreadRadius: 2, 
-        blurRadius: 5,
-        offset: const Offset(1, 8),
-      ),
-    ],
-            borderRadius: BorderRadius.circular(15), color: Colors.white),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(1, 8),
+          ),
+        ], 
+        borderRadius: BorderRadius.circular(15), color: Colors.white),
         child: Stack(
           children: [
             Container(
@@ -124,7 +123,6 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
                 ),
               ),
             ),
-
             Positioned(
               right: 0,
               child: Container(
@@ -135,19 +133,22 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
                       BorderRadius.horizontal(left: Radius.circular(10)),
                   color: Colors.white,
                 ),
-                child: cantidadventa==0 ?  IconButton(
-                    onPressed: () {
-                      _realizarPedidoScreen(context);
-                    },
-                    icon: const Icon(
-                      Icons.add_circle_outline_outlined,
-                      size: 20,
-                      color: Color.fromARGB(255, 6, 229, 13),
-                    )) : const Icon(Icons.check, color: Colors.green,),
+                child: cantidadventa == 0
+                    ? IconButton(
+                        onPressed: () {
+                          _realizarPedidoScreen(context);
+                        },
+                        icon: const Icon(
+                          Icons.add_circle_outline_outlined,
+                          size: 20,
+                          color: Color.fromARGB(255, 6, 229, 13),
+                        ))
+                    : const Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
               ),
             ),
-
-
             Positioned(
               bottom: 0,
               child: SizedBox(

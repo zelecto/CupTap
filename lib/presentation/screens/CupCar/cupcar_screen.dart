@@ -1,3 +1,4 @@
+import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
 
@@ -13,67 +14,72 @@ class _CupCarScreenState extends State<CupCarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CrearAppbar(
+      appBar: crearAppbar(
           "Realiza tus pedidos", const Icon(Icons.shopping_bag_outlined)),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 40, 20, 40),
-        child: SingleChildScrollView(
-
-          child: Column(
-            children: [
-              const TextoConNegrita(
-                fontSize: 25,
-                texto: "TU COMPRA",
-              ),
-              const Divider(
-                color: Colors.black38,
-                thickness: 3,
-              ),
-              
-              const _MyCardPedido(
-                  "Empanada",
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGSZU9NZXEIFylmIrCbu7D6L9g8vxRAooAWw&usqp=CAU",
-                  10000,
-                  100000,
-                  100),
-              const _MyCardPedido(
-                  "Patacon",
-                  "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
-                  10000,
-                  100000,
-                  100),
-              const _MyCardPedido(
-                  "Papa",
-                  "https://mojo.generalmills.com/api/public/content/E7Xi4th4mk-_NectBDhpNg_gmi_hi_res_jpeg.jpeg?v=6106f73d&t=16e3ce250f244648bef28c5949fb99ff",
-                  10000,
-                  100000,
-                  100),
-          
-              const SizedBox(height: 10,),
-              Container(
-                
-                constraints: const BoxConstraints(maxWidth: double.infinity),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      FilledButton(
-                        onPressed: () {},
-                        child: const Text("RESERVAR"),
-                      ),
-                      const Spacer(),
-                      FilledButton(
-                        onPressed: () {},
-                        child: const Text("PAGAR"),
-                      ),
-                    ],
+      body: CustomScrollView(
+        
+        slivers: [
+          SliverPadding(padding: const EdgeInsets.all(15),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                const Center(
+                  child: TextoConNegrita(
+                    fontSize: 25,
+                    texto: "TU COMPRA",
                   ),
                 ),
-              ),
-            ],
+                const Divider(
+                  color: Colors.black38,
+                  thickness: 3,
+                ),
+              ]),
+            ),
           ),
-        ),
+
+          SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+              childAspectRatio: 3,
+              mainAxisSpacing: 20,
+                ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: _MyCardPedido(
+                      "Empanada",
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGSZU9NZXEIFylmIrCbu7D6L9g8vxRAooAWw&usqp=CAU",
+                      10000,
+                      100000,
+                      100),
+                );
+              },
+              childCount: 5,
+            ),
+          ),
+          
+          SliverPadding(padding: const EdgeInsets.all(20),
+           sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                Row(
+                  children: [
+                    FilledButton(
+                      onPressed: () {},
+                      child: const Text("RESERVAR"),
+                    ),
+                    const Spacer(),
+                    FilledButton(
+                      onPressed: () {},
+                      child: const Text("PAGAR"),
+                    ),
+                  ],
+                ),
+                
+              ]),
+            ),
+          )
+          
+        ],
       ),
     );
   }
@@ -91,109 +97,67 @@ class _MyCardPedido extends StatelessWidget {
     this.nameProduct, 
     this.imgUrl, 
     this.precioCobrar,
-    this.totalPagar, this.cantidadVendida
+    this.totalPagar, 
+    this.cantidadVendida
   );
+  TextStyle estiloTexto(Color color) {
+    return TextStyle(fontSize: 18, color: color, fontWeight: FontWeight.w600);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double widthDisponible = MediaQuery.of(context).size.width;
-    final double heightDisponible = MediaQuery.of(context).size.height;
-    return SizedBox(
-      height: heightDisponible*0.24,
-      child: Card(
-        surfaceTintColor: Colors.white,
-        elevation: 5,
-        child: Column(
-          children: [
-            Row(
+    
+    return Container(
+      
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(5, 5),
+          ),
+        ], 
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: SizedBox(
+              width: ScreenSize.screenWidth*0.40,
+              height: ScreenSize.screenHeight*0.15,
+              child: Image.network(imgUrl, fit: BoxFit.cover),
+            ),
+          ),
+
+          SizedBox(
+            width: ScreenSize.screenWidth*0.40,
+            height: ScreenSize.screenHeight*0.20,
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: SizedBox(
-                    width: widthDisponible*0.40,
-                    height: heightDisponible*0.13,
-                    child: Image.network(imgUrl, fit: BoxFit.cover),
-                  ),
-                ),
-                SizedBox(
-                  width: widthDisponible*0.40,
-                  height: widthDisponible*0.34,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextoConNegrita(texto: nameProduct, fontSize: 25),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: Text(
-                          "\$$precioCobrar  C/U",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      //Pie de tarjeta
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                  Icons.remove_circle_outline_rounded)),
-                          SizedBox(
-                            width: widthDisponible*0.08,
-                            height: heightDisponible*0.02,
-                            child: const TextField(
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                  Icons.add_circle_outline_outlined)),
-                        ],
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            const Divider(
-              color: Colors.black54,
-              thickness: 3,
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  
-                  mainAxisAlignment: MainAxisAlignment.end,
+                TextoConNegrita(texto: nameProduct, fontSize: 25),
+                Text("15 U", 
+                  style: estiloTexto(Colors.grey.shade600)),
+                Row(
                   children: [
-                    FilledButton(
-                      onPressed: () {
-                      //TODO metodo de eliminacion
-                    }, 
-                    child: Text("Eliminar"),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.redAccent
-                      
-                    ),
-                    ),
-                    const Spacer(),
                     Text(
-                      "SubTotal:   $totalPagar ",
-                      style: const TextStyle(fontSize: 19),
+                      "$precioCobrar ",
+                      textAlign: TextAlign.center,
+                      style: estiloTexto(Colors.blue),
                     ),
-                    const Icon(Icons.monetization_on_outlined,)
+                    const Icon(Icons.attach_money,color: Colors.blue, size: 20,)
                   ],
                 ),
-              ),
-            )
-          ],
-        ),
+                //Pie de tarjeta
+                
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

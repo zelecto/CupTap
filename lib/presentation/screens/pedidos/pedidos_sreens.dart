@@ -18,7 +18,7 @@ class _PedidosScreenState extends State<PedidosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CrearAppbar("Pedidos", const Icon(Icons.shopping_bag_outlined)),
+      appBar: crearAppbar("Pedidos", const Icon(Icons.shopping_bag_outlined)),
       body: Column(
         children: [
           NavigationBar(

@@ -23,7 +23,7 @@ class HomeState extends ConsumerState<Home> {
         appBar: CrearAppbar("Home", const Icon(Icons.home_outlined)),
         body: productosAsync.when(
             data: (data) {
-              listaProductos=data;
+              listaProductos = data;
               return CustomScrollView(
                 slivers: [
                   SliverPadding(
@@ -88,21 +88,26 @@ class _MyCardProducto extends ConsumerStatefulWidget {
 class MyCardProductoState extends ConsumerState<_MyCardProducto> {
   @override
   Widget build(BuildContext context) {
-    final listaDetalles= ref.watch(detallesPedidoProviderProvider);
-    var cantidadVenta=0;
-    listaDetalles.forEach((e) {
-      if(e.producto == widget.producto){
-        cantidadVenta = e.cantidaVendida;
+    final List<DetallePedido> listaDetalles = ref.watch(detallesPedidoProvider);
+    int cantidadventa = 0;
+    for (var element in listaDetalles) {
+      if (element.producto == widget.producto) {
+        cantidadventa = element.cantidaVendida;
       }
-    },);
-    
-    print(cantidadVenta);
-    
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Container(
         decoration: BoxDecoration(
-
+            boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.2), 
+        spreadRadius: 2, 
+        blurRadius: 5,
+        offset: const Offset(1, 8),
+      ),
+    ],
             borderRadius: BorderRadius.circular(15), color: Colors.white),
         child: Stack(
           children: [
@@ -119,6 +124,7 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
                 ),
               ),
             ),
+
             Positioned(
               right: 0,
               child: Container(
@@ -129,7 +135,7 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
                       BorderRadius.horizontal(left: Radius.circular(10)),
                   color: Colors.white,
                 ),
-                child: IconButton(
+                child: cantidadventa==0 ?  IconButton(
                     onPressed: () {
                       _realizarPedidoScreen(context);
                     },
@@ -137,9 +143,11 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
                       Icons.add_circle_outline_outlined,
                       size: 20,
                       color: Color.fromARGB(255, 6, 229, 13),
-                    )),
+                    )) : const Icon(Icons.check, color: Colors.green,),
               ),
             ),
+
+
             Positioned(
               bottom: 0,
               child: SizedBox(
@@ -148,7 +156,7 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
                   padding: const EdgeInsets.all(8.0),
                   child: _DatosProducto(
                       nombre: widget.producto.nombre,
-                      stock: widget.producto.stock - cantidadVenta,
+                      stock: widget.producto.stock - cantidadventa,
                       precio: widget.producto.precio),
                 ),
               ),
@@ -174,7 +182,6 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
 
 class _AgregarDetalleView extends ConsumerStatefulWidget {
   final _MyCardProducto contexto;
-  
 
   const _AgregarDetalleView({
     required this.contexto,
@@ -191,9 +198,8 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
     subTotal = widget.contexto.producto.precio * cantidadventa;
   }
 
-  TextStyle styleTextButton = const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
-
-  
+  TextStyle styleTextButton =
+      const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
 
   @override
   Widget build(BuildContext context) {
@@ -223,8 +229,7 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
                 height: ScreenSize.screenHeight * 0.1,
                 child: _DatosProducto(
                     nombre: widget.contexto.producto.nombre,
-                    stock:
-                        widget.contexto.producto.stock - cantidadventa,
+                    stock: widget.contexto.producto.stock - cantidadventa,
                     precio: subTotal)),
             IconButton(
                 onPressed: () {
@@ -273,10 +278,14 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
                   style: FilledButton.styleFrom(
                       backgroundColor: Colors.green.shade700),
                   onPressed: () {
-                    DetallePedido detallePedido= DetallePedido(cantidaVendida: cantidadventa, subPrecioCobro: subTotal, producto: widget.contexto.producto);
-                    
-                    ref.read(detallesPedidoProviderProvider.notifier).agregarDetalle(detallePedido);
-                    // Navigator.pop(context);
+                    DetallePedido detallePedido = DetallePedido(
+                        cantidaVendida: cantidadventa,
+                        subPrecioCobro: subTotal,
+                        producto: widget.contexto.producto);
+                    ref
+                        .read(detallesPedidoProvider.notifier)
+                        .agregarDetalle(detallePedido);
+                    Navigator.pop(context);
                   },
                   child: Text("Agregar", style: styleTextButton)),
             ],

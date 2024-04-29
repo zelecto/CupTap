@@ -6,22 +6,21 @@ part of 'detalles_pedido_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$detallesPedidoProviderHash() =>
-    r'bd3e6372edc290e60cde6397e0d9e24a9d94b975';
+String _$detallesPedidoHash() => r'ecee0afc871e10200906dfe0f6d28a5e3ffafcde';
 
-/// See also [DetallesPedidoProvider].
-@ProviderFor(DetallesPedidoProvider)
-final detallesPedidoProviderProvider =
-    NotifierProvider<DetallesPedidoProvider, List<DetallePedido>>.internal(
-  DetallesPedidoProvider.new,
-  name: r'detallesPedidoProviderProvider',
+/// See also [DetallesPedido].
+@ProviderFor(DetallesPedido)
+final detallesPedidoProvider =
+    NotifierProvider<DetallesPedido, List<DetallePedido>>.internal(
+  DetallesPedido.new,
+  name: r'detallesPedidoProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$detallesPedidoProviderHash,
+      : _$detallesPedidoHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$DetallesPedidoProvider = Notifier<List<DetallePedido>>;
+typedef _$DetallesPedido = Notifier<List<DetallePedido>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

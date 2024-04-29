@@ -1,88 +1,78 @@
-import 'package:cutap/Base/producto/consulta_producto.dart';
 import 'package:cutap/config/Screeb/screen_size.dart';
+import 'package:cutap/entity/pedido/venta_producto.dart';
 import 'package:cutap/entity/producto/producto.dart';
+import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
+import 'package:cutap/presentation/provider/producto/producto_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-class Home extends StatefulWidget {
-  Home({super.key});
+class Home extends ConsumerStatefulWidget {
+  const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  HomeState createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
-  final GetProducto _getProducto = GetProducto();
-  List<Producto> _listaProductos = [];
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchData();
-  }
-
-  Future<void> _fetchData() async {
-    final datos = await _getProducto.getAllProducts();
-    if (mounted)
-      setState(() {
-        _listaProductos = datos;
-      });
-  }
-
+class HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
+    late List<Producto> listaProductos;
+    final productosAsync = ref.watch(consultaProductosProvider);
     return Scaffold(
-      appBar: CrearAppbar("Home", const Icon(Icons.home_outlined)),
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                const TextoConNegrita(
-                  texto: "Bienvenido, usuario",
-                  fontSize: 25,
-                ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Buscar...',
-                      prefixIcon: Icon(Icons.search),
+        appBar: CrearAppbar("Home", const Icon(Icons.home_outlined)),
+        body: productosAsync.when(
+            data: (data) {
+              listaProductos=data;
+              return CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        const TextoConNegrita(
+                          texto: "Bienvenido, usuario",
+                          fontSize: 25,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Buscar...',
+                              prefixIcon: Icon(Icons.search),
+                            ),
+                          ),
+                        ),
+                        const _ConsultarArticulosView(),
+                      ]),
                     ),
                   ),
-                ),
-                const _ConsultarArticulosView(),
-              ]),
-            ),
-          ),
-          SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, mainAxisSpacing: 20, childAspectRatio: 0.85),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return _MyCardProducto(
-                  imgUrl: imgDefault[index],
-                  producto: _listaProductos[index],
-                );
-              },
-              childCount: _listaProductos.length,
-            ),
-          ),
-        ],
-      ),
-    );
+                  SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20,
+                            childAspectRatio: 0.85),
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return _MyCardProducto(
+                          imgUrl: imgDefault[index],
+                          producto: listaProductos[index],
+                        );
+                      },
+                      childCount: listaProductos.length,
+                    ),
+                  ),
+                ],
+              );
+            },
+            error: (error, stackTrace) => Text("$error"),
+            loading: () => const CircularProgressIndicator()));
   }
 }
 
-class _MyCardProducto extends StatefulWidget {
+class _MyCardProducto extends ConsumerStatefulWidget {
   final String imgUrl;
   final Producto producto;
 
@@ -92,16 +82,27 @@ class _MyCardProducto extends StatefulWidget {
   });
 
   @override
-  State<_MyCardProducto> createState() => _MyCardProductoState();
+  MyCardProductoState createState() => MyCardProductoState();
 }
 
-class _MyCardProductoState extends State<_MyCardProducto> {
+class MyCardProductoState extends ConsumerState<_MyCardProducto> {
   @override
   Widget build(BuildContext context) {
+    final listaDetalles= ref.watch(detallesPedidoProviderProvider);
+    var cantidadVenta=0;
+    listaDetalles.forEach((e) {
+      if(e.producto == widget.producto){
+        cantidadVenta = e.cantidaVendida;
+      }
+    },);
+    
+    print(cantidadVenta);
+    
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Container(
         decoration: BoxDecoration(
+
             borderRadius: BorderRadius.circular(15), color: Colors.white),
         child: Stack(
           children: [
@@ -145,7 +146,10 @@ class _MyCardProductoState extends State<_MyCardProducto> {
                 width: ScreenSize.screenWidth * 0.50,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: _DatosProducto(nombre: widget.producto.nombre, stock: widget.producto.stock, precio: widget.producto.precio),
+                  child: _DatosProducto(
+                      nombre: widget.producto.nombre,
+                      stock: widget.producto.stock - cantidadVenta,
+                      precio: widget.producto.precio),
                 ),
               ),
             )
@@ -168,25 +172,28 @@ class _MyCardProductoState extends State<_MyCardProducto> {
   }
 }
 
-class _AgregarDetalleView extends StatefulWidget {
+class _AgregarDetalleView extends ConsumerStatefulWidget {
   final _MyCardProducto contexto;
-  int cantidadventa = 1;
-  late double subTotal;
+  
 
-  _AgregarDetalleView({
+  const _AgregarDetalleView({
     required this.contexto,
   });
 
   @override
-  State<_AgregarDetalleView> createState() => _AgregarDetalleViewState();
+  AgregarDetalleViewState createState() => AgregarDetalleViewState();
 }
 
-class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
+class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
+  int cantidadventa = 1;
+  late double subTotal;
   void calcularSubtotal() {
-    widget.subTotal = widget.contexto.producto.precio * widget.cantidadventa;
+    subTotal = widget.contexto.producto.precio * cantidadventa;
   }
 
-  TextStyle styleTextButton=const TextStyle(fontSize: 18,fontWeight: FontWeight.w600);
+  TextStyle styleTextButton = const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -214,30 +221,30 @@ class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
             Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 height: ScreenSize.screenHeight * 0.1,
-                child: _DatosProducto( 
-                  nombre: widget.contexto.producto.nombre,
-                  stock: widget.contexto.producto.stock-widget.cantidadventa,
-                  precio: widget.subTotal
-                )),
+                child: _DatosProducto(
+                    nombre: widget.contexto.producto.nombre,
+                    stock:
+                        widget.contexto.producto.stock - cantidadventa,
+                    precio: subTotal)),
             IconButton(
                 onPressed: () {
-                  if (widget.cantidadventa > 1) {
+                  if (cantidadventa > 1) {
                     setState(() {
-                      widget.cantidadventa--;
+                      cantidadventa--;
                       calcularSubtotal();
                     });
                   }
                 },
                 icon: const Icon(Icons.remove_outlined)),
             Text(
-              "${widget.cantidadventa}",
+              "$cantidadventa",
               style: const TextStyle(fontSize: 20),
             ),
             IconButton(
                 onPressed: () {
-                  if (widget.cantidadventa < widget.contexto.producto.stock) {
+                  if (cantidadventa < widget.contexto.producto.stock) {
                     setState(() {
-                      widget.cantidadventa++;
+                      cantidadventa++;
                       calcularSubtotal();
                     });
                   }
@@ -245,24 +252,33 @@ class _AgregarDetalleViewState extends State<_AgregarDetalleView> {
                 icon: const Icon(Icons.add))
           ],
         ),
-        
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Row(
             children: [
               FilledButton(
-                  style: FilledButton.styleFrom(backgroundColor: Colors.red.shade700,),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child:Text("Cancelar",style: styleTextButton,),),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.red.shade700,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Cancelar",
+                  style: styleTextButton,
+                ),
+              ),
               const Spacer(),
               FilledButton(
-                  style: FilledButton.styleFrom(backgroundColor: Colors.green.shade700),
+                  style: FilledButton.styleFrom(
+                      backgroundColor: Colors.green.shade700),
                   onPressed: () {
-                    Navigator.pop(context);
+                    DetallePedido detallePedido= DetallePedido(cantidaVendida: cantidadventa, subPrecioCobro: subTotal, producto: widget.contexto.producto);
+                    
+                    ref.read(detallesPedidoProviderProvider.notifier).agregarDetalle(detallePedido);
+                    // Navigator.pop(context);
                   },
-                  child: Text("Agregar",style:  styleTextButton)),
+                  child: Text("Agregar", style: styleTextButton)),
             ],
           ),
         )
@@ -276,18 +292,17 @@ class _DatosProducto extends StatelessWidget {
   final int stock;
   final double precio;
   const _DatosProducto({
-    required this.nombre, required this.stock, required this.precio,
+    required this.nombre,
+    required this.stock,
+    required this.precio,
   });
-
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
-            child: TextoConNegrita(
-                texto: nombre, fontSize: 20)),
+        Center(child: TextoConNegrita(texto: nombre, fontSize: 20)),
         Text(
           "$stock Disponible",
           style: TextStyle(fontSize: 15, color: Colors.grey.shade500),

@@ -4,8 +4,8 @@ import 'package:cutap/entity/pedido/venta_producto.dart';
 import 'package:cutap/entity/producto/producto.dart';
 
 // Crear una lista independiente de ventas de productos
-List<VentaProducto> listaVentasProductos = [
-  VentaProducto(
+List<DetallePedido> listaVentasProductos = [
+  DetallePedido(
     cantidaVendida: 2,
     subPrecioCobro: 3000, // Suponiendo que el subtotal es $3000
     producto: Producto(
@@ -18,7 +18,7 @@ List<VentaProducto> listaVentasProductos = [
           ventaActiva: true
     ),
   ),
-  VentaProducto(
+  DetallePedido(
     cantidaVendida: 1,
     subPrecioCobro: 2500, // Suponiendo que el subtotal es $2500
     producto: Producto(
@@ -39,23 +39,23 @@ List<Pedido> listaPedidosPrueba = [
   Pedido(
     id: 1,
     fechaRegistro: DateTime(2024, 4, 20),
-    estadoPedido: estadoPedidoPendiete,
-    ventaProducto: listaVentasProductos,
+    estado: estadoPedidoPendiete,
+    detalles: listaVentasProductos,
     total: calcularTotal(listaVentasProductos),
     
   ),
   Pedido(
     id: 2,
     fechaRegistro: DateTime(2024, 4, 21),
-    estadoPedido: estadoPedidoPagado,
-    ventaProducto: listaVentasProductos,
+    estado: estadoPedidoPagado,
+    detalles: listaVentasProductos,
     total: 0, 
   ),
   Pedido(
     id: 3,
     fechaRegistro: DateTime(2024, 4, 22),
-    estadoPedido: estadoPedidoPagado,
-    ventaProducto: listaVentasProductos,
+    estado: estadoPedidoPagado,
+    detalles: listaVentasProductos,
     total: 0, 
   ),
 ];
@@ -67,7 +67,7 @@ EstadoPedido estadoPedidoPagado= EstadoPedido(nombre: "Pagado", fecha: DateTime(
 
 
 // Función para calcular el total basado en las ventas de productos
-double calcularTotal(List<VentaProducto> ventas) {
+double calcularTotal(List<DetallePedido> ventas) {
   double total = 0;
   for (var venta in ventas) {
     total += venta.subPrecioCobro;

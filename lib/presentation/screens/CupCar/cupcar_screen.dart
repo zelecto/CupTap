@@ -1,6 +1,6 @@
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 
 class CupCarScreen extends StatefulWidget {
   const CupCarScreen({super.key});

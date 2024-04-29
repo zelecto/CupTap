@@ -75,7 +75,7 @@ class _MyCardPedidoState extends State<_MyCardPedido> {
     super.initState();
     _automaticScroollTools = listaPedidos
         .map((pedido) =>
-            AutomaticScroollTool(cantidadPagina: pedido.ventaProducto.length))
+            AutomaticScroollTool(cantidadPagina: pedido.detalles.length))
         .toList();
   }
 
@@ -129,7 +129,7 @@ class _MyCardPedidoState extends State<_MyCardPedido> {
                     ),
                   ),
                   _DetallePedidoReelView(
-                    listaVentas: listaPedidos[index].ventaProducto,
+                    listaVentas: listaPedidos[index].detalles,
                     automaticScroollTool: _automaticScroollTools[index],
                   ),
                   const Divider(
@@ -166,7 +166,7 @@ class _MyCardPedidoState extends State<_MyCardPedido> {
 
 
 class _DetallePedidoReelView extends StatefulWidget {
-  final List<VentaProducto> listaVentas;
+  final List<DetallePedido> listaVentas;
   final AutomaticScroollTool automaticScroollTool;
   const _DetallePedidoReelView({required this.listaVentas, required this.automaticScroollTool});
 

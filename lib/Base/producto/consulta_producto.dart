@@ -1,17 +1,17 @@
-
+import 'package:cutap/config/api/api_request.dart';
 import 'package:cutap/entity/producto/producto.dart';
-import 'package:dio/dio.dart';
 
-class GetProducto {
+
+class ProductApiService {
   Future<List<Producto>> getAllProducts() async {
-    
-    final dio = Dio();
-    
-    var url = 'https://cuptapapi.onrender.com/v1/Productos';
-
-    final response = await dio.get(url);
-    var listaProductos = List<Producto>.from(response.data["data"].map((x) => Producto.fromJson(x)));
+    final apiRequest = ApiRequest(
+        methodType: "get",
+        endpoint: "https://cuptapapi.onrender.com/v1/Productos",
+        data: null
+    );
+    final response = await apiRequest.request();
+    var listaProductos = List<Producto>.from(
+        response.data["data"].map((x) => Producto.fromJson(x)));
     return listaProductos;
-
   }
 }

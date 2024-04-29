@@ -5,7 +5,6 @@ import 'package:cutap/presentation/widgets/square_tile.dart';
 // import 'package:cutap/config/api/api_request.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,7 +21,14 @@ class _LoginState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  // Variable para rastrear si la llamada a la API está en curso
+  bool _isLoading = false;
+
   Future signIn() async {
+    setState(() {
+      _isLoading = true; // Comienza la llamada a la API
+    });
+
     final db = FirebaseFirestore.instance;
     List<Usuario> usuarios = await db.collection("admins").get().then((value) =>
         value.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
@@ -39,6 +45,12 @@ class _LoginState extends State<LoginScreen> {
       }
     } catch (err) {
       print(err);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false; // Termina la llamada a la API
+        });
+      }
     }
   }
 
@@ -66,7 +78,7 @@ class _LoginState extends State<LoginScreen> {
               const SizedBox(height: 10),
 
               const Text(
-                'Solo para los más insanos de la región',
+                'Branding de la empresa',
                 style: TextStyle(
                   fontSize: 20,
                 ),
@@ -106,8 +118,15 @@ class _LoginState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(12)),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _passwordController,
+                      validator: (value) {
+                        if(value!.isEmpty){
+                          return "Ingrese un usuario";
+                        }else{
+                          return null;
+                        }
+                      },
                       obscureText: true,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -124,19 +143,28 @@ class _LoginState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: InkWell(
-                  onTap: signIn,
+                  onTap: _isLoading ? null : signIn,
                   child: Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: Colors.blueAccent),
-                    child: const Center(
-                        child: Text('Iniciar sesión',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ))),
+                        color: _isLoading ? Colors.blue[700] : Colors.blueAccent),
+                    child: Center(
+                        child: _isLoading
+                            ? const SizedBox(
+                              height: 30,
+                              width: 30,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            ) // Muestra un indicador de progreso durante la llamada a la API
+                            : const Text('Iniciar sesión',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ))),
                   ),
                 ),
               ),

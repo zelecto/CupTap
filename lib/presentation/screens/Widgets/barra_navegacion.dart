@@ -1,65 +1,77 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
+import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
 import 'package:cutap/presentation/screens/cuenta/cuentaScreen.dart';
 import 'package:cutap/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-class NavigationExample extends StatefulWidget {
+class NavigationExample extends ConsumerStatefulWidget {
   const NavigationExample({super.key});
 
   @override
-  State<NavigationExample> createState() => NavigationExampleState();
+  NavigationExampleState createState() => NavigationExampleState();
 }
 
-class NavigationExampleState extends State<NavigationExample> {
+class NavigationExampleState extends ConsumerState<NavigationExample> {
   int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final List<DetallePedido> listaDetalles = ref.watch(detallesPedidoProvider);
+    final int numeroDetalles = listaDetalles.length;
+
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        indicatorColor: Colors.blue.shade100,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Principal',
-          ),
-          NavigationDestination(
-            icon: Badge(backgroundColor: Colors.green,child: Icon(Icons.add_shopping_cart_sharp),),
-            label: 'CupCar',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              label: Text('5'),
-              child: Icon(Icons.search),
+      bottomNavigationBar: FadeInUp(
+        child: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          indicatorColor: Colors.blue.shade100,
+          selectedIndex: currentPageIndex,
+          destinations: <Widget>[
+            const NavigationDestination(
+              selectedIcon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              label: 'Principal',
             ),
-            label: 'Pedidos',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.people),
-            label: 'Tu cuenta',
-          ),
-        ],
+            NavigationDestination(
+              icon: Badge(
+                  label: numeroDetalles > 0 ? Text("$numeroDetalles") : null,
+                  backgroundColor:
+                      numeroDetalles > 0 ? Colors.green : Colors.grey,
+                  child: const Icon(Icons.shopping_bag_outlined)),
+              label: 'CupCar',
+            ),
+            const NavigationDestination(
+              icon: Badge(
+                label: Text('5'),
+                child: Icon(Icons.search),
+              ),
+              label: 'Pedidos',
+            ),
+            const NavigationDestination(
+              icon: Icon(Icons.people),
+              label: 'Tu cuenta',
+            )
+          ],
+        ),
       ),
-      body: <Widget>[
+      body: [
         /// Home page
-        Home(),
+        FadeInDown(child: const Home()),
 
         /// Pedidos Page
-         
-       const CupCarScreen(),
+
+        FadeInLeft(child: const CupCarScreen()),
 
         /// Consultas Page
-        const PedidosScreen(),
+        FadeInRight(child: const PedidosScreen()),
 
         //CuentaCliente Page
-        const CuentaClienteScreen()
+        FadeInUp(child: const CuentaClienteScreen())
       ][currentPageIndex],
     );
   }

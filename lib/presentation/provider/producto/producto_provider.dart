@@ -1,5 +1,5 @@
 
-import 'package:cutap/Base/producto/consulta_producto.dart';
+import 'package:cutap/Base/producto/product_api_service.dart';
 import 'package:cutap/entity/producto/producto.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -27,9 +27,11 @@ class Pedido{
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "fechaRegistro": fechaRegistro,
-        "total": total,
+        //"usuario": usuario.toJson(),
+        "estado": estado.toJson(),
+        "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
       };
+
+
 }
 

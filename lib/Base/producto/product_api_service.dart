@@ -3,6 +3,7 @@ import 'package:cutap/entity/producto/producto.dart';
 
 
 class ProductApiService {
+  
   Future<List<Producto>> getAllProducts() async {
     final apiRequest = ApiRequest(
         methodType: "get",

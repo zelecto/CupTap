@@ -1,6 +1,7 @@
 // import 'package:dio/dio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cutap/infrastructure/models/usuarios_model.dart';
+import 'package:cutap/presentation/screens/Widgets/inputs/custom_inputs.dart';
 import 'package:cutap/presentation/widgets/square_tile.dart';
 // import 'package:cutap/config/api/api_request.dart';
 import 'package:dio/dio.dart';
@@ -30,14 +31,14 @@ class _LoginState extends State<LoginScreen> {
     });
 
     final db = FirebaseFirestore.instance;
-    List<Usuario> usuarios = await db.collection("admins").get().then((value) =>
+    List<Usuario> firebaseUsers = await db.collection("admins").get().then((value) =>
         value.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
     String username = _usernameController.text;
     String password = _passwordController.text;
 
     try {
-      if (usuarios.any((usuario) =>
+      if (firebaseUsers.any((usuario) =>
           usuario.username == username && usuario.password == password)) {
         if (mounted) {
           context.go("/barraNavegacion");
@@ -83,58 +84,21 @@ class _LoginState extends State<LoginScreen> {
                   fontSize: 20,
                 ),
               ),
+
               const SizedBox(height: 40),
 
-              // Nombre de usuario textfield
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      controller: _usernameController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Nombre de usuario',
-                      ),
-                    ),
-                  ),
-                ),
+              CustomTextFormField(
+                controller: _usernameController,
+                hint: 'Nombre de usuario',
               ),
 
               const SizedBox(height: 10),
 
               //Contraseña textfield
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      validator: (value) {
-                        if(value!.isEmpty){
-                          return "Ingrese un usuario";
-                        }else{
-                          return null;
-                        }
-                      },
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Contraseña',
-                      ),
-                    ),
-                  ),
-                ),
+              CustomTextFormField(
+                controller: _passwordController,
+                hint: 'Contraseña',
+                obscureText: true,
               ),
 
               const SizedBox(height: 10),
@@ -148,17 +112,18 @@ class _LoginState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: _isLoading ? Colors.blue[700] : Colors.blueAccent),
+                        color:
+                            _isLoading ? Colors.blue[700] : Colors.blueAccent),
                     child: Center(
                         child: _isLoading
                             ? const SizedBox(
-                              height: 30,
-                              width: 30,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            ) // Muestra un indicador de progreso durante la llamada a la API
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              ) // Muestra un indicador de progreso durante la llamada a la API
                             : const Text('Iniciar sesión',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -226,17 +191,20 @@ class _LoginState extends State<LoginScreen> {
               const SizedBox(height: 25),
 
               //Enlace a la pantalla de registro para los nuevos usuarios
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     '¿No eres usuario?',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                    ' ¡Registrate ahora!',
-                    style: TextStyle(
-                        color: Colors.blue, fontWeight: FontWeight.bold),
+                  InkWell(
+                    onTap: () => context.push('/register_screen'),
+                    child: const Text(
+                      ' ¡Registrate ahora!',
+                      style: TextStyle(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),

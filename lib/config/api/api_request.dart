@@ -17,8 +17,10 @@ class ApiRequest {
 
   Stream<bool> get loading => _loadingController.stream;
 
-  ApiRequest({required this.methodType, required this.endpoint, required this.data})
-      : assert(methodTypes.contains(methodType), "Metodo invalido: $methodType ");
+  ApiRequest(
+      {required this.methodType, required this.endpoint, required this.data})
+      : assert(
+            methodTypes.contains(methodType), "Metodo invalido: $methodType ");
 
   Future<Response> request() async {
     _loadingController.add(true);
@@ -30,7 +32,9 @@ class ApiRequest {
     };
 
     try {
-      Response response = await methods[methodType]!(endpoint, data: data);
+      Response response = await methods[methodType]!(
+          'https://cuptapapi.onrender.com/v1$endpoint',
+          data: data);
       _loadingController.add(false);
       return response;
     } catch (e) {

@@ -1,6 +1,6 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
-import 'package:cutap/entity/pedido/datos_prueba.dart';
-import 'package:cutap/entity/pedido/venta_producto.dart';
+
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
 import 'package:cutap/entity/tools/pedidos_sceens_tools/automatic_scrooll_tool.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +67,8 @@ class _MyCardPedido extends StatefulWidget {
 }
 
 class _MyCardPedidoState extends State<_MyCardPedido> {
-  final listaPedidos = listaPedidosPrueba;
+  //TODO: Consulta en la base de datos
+  final listaPedidos = [];
   late List<AutomaticScroollTool> _automaticScroollTools;
 
   @override
@@ -232,18 +233,19 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                      child: Row(
-                        children: [
-                          Text(
-                              "Cantidad : ${widget.listaVentas[index].cantidaVendida}"),
-                          const Spacer(),
-                          Text(
-                              "Precio ${widget.listaVentas[index].subPrecioCobro}"),
-                        ],
-                      ),
-                    ),
+                    // TODO: implementar los pedidos por base de datos 
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                    //   child: Row(
+                    //     children: [
+                    //       Text(
+                    //           "Cantidad : ${widget.listaVentas[index].cantidaVendida}"),
+                    //       const Spacer(),
+                    //       Text(
+                    //           "Precio ${widget.listaVentas[index].subPrecioCobro}"),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

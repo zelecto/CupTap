@@ -1,5 +1,5 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
-import 'package:cutap/entity/pedido/venta_producto.dart';
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
 import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +17,9 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
   Widget build(BuildContext context) {
     final List<DetallePedido> listaDetalles = ref.watch(detallesPedidoProvider);
     double totalPagar = 0;
-    listaDetalles.forEach((element) {
-      totalPagar += element.subPrecioCobro;
-    });
+    for (var element in listaDetalles) {
+      totalPagar += element.subtotal;
+    }
     return Scaffold(
         appBar: crearAppbar(
             "Consulta tu carrito", const Icon(Icons.shopping_bag_outlined)),
@@ -150,12 +150,12 @@ class _MyCardPedido extends ConsumerWidget {
                 children: [
                   TextoConNegrita(
                       texto: detallePedido.producto.nombre, fontSize: 25),
-                  Text("${detallePedido.cantidaVendida} U",
+                  Text("${detallePedido.cantidad} U",
                       style: estiloTexto(Colors.grey.shade600)),
                   Row(
                     children: [
                       Text(
-                        "${detallePedido.subPrecioCobro} ",
+                        "${detallePedido.subtotal} ",
                         textAlign: TextAlign.center,
                         style: estiloTexto(Colors.blue),
                       ),
@@ -203,18 +203,20 @@ class CupCarVacioView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(
             child: SizedBox(
               width: ScreenSize.screenWidth * 0.6,
-              height: ScreenSize.screenHeight * 0.6,
+              height: ScreenSize.screenHeight * 0.5,
               child: Image.asset(
                 "assets/images/CupCarVacio.png",
                 fit: BoxFit.contain,
               ),
             ),
           ),
-          const TextoConNegrita(texto: "Tu carrito esta vacio", fontSize: 40)
+          const TextoConNegrita(texto: "Tu carrito esta vacio", fontSize: 32)
         ],
       ),
     );

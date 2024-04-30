@@ -1,4 +1,4 @@
-import 'package:cutap/entity/pedido/venta_producto.dart';
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'detalles_pedido_provider.g.dart';
 

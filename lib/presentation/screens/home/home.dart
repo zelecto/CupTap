@@ -1,5 +1,5 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
-import 'package:cutap/entity/pedido/venta_producto.dart';
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
 import 'package:cutap/entity/producto/producto.dart';
 import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
 import 'package:cutap/presentation/provider/producto/producto_provider.dart';
@@ -92,7 +92,7 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
     int cantidadventa = 0;
     for (var element in listaDetalles) {
       if (element.producto == widget.producto) {
-        cantidadventa = element.cantidaVendida;
+        cantidadventa = element.cantidad;
       }
     }
 
@@ -280,8 +280,8 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
                       backgroundColor: Colors.green.shade700),
                   onPressed: () {
                     DetallePedido detallePedido = DetallePedido(
-                        cantidaVendida: cantidadventa,
-                        subPrecioCobro: subTotal,
+                        cantidad: cantidadventa,
+                        subtotal: subTotal,
                         producto: widget.contexto.producto);
                     ref
                         .read(detallesPedidoProvider.notifier)

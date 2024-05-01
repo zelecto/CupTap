@@ -38,22 +38,24 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
               label: 'Principal',
             ),
             NavigationDestination(
-              icon: Badge(
-                  label: numeroDetalles > 0 ? Text("$numeroDetalles") : null,
-                  backgroundColor:
-                      numeroDetalles > 0 ? Colors.green : Colors.grey,
-                  child: const Icon(Icons.shopping_bag_outlined)),
+              selectedIcon:  _IconoNavegacion(numeroIndicador: numeroDetalles, icono: const Icon(Icons.shopping_bag_rounded)),
+              icon: _IconoNavegacion(
+                numeroIndicador: numeroDetalles, 
+                icono: const Icon(Icons.shopping_bag_outlined),
+                ),
               label: 'CupCar',
             ),
             const NavigationDestination(
+              selectedIcon: Icon(Icons.hourglass_full),
               icon: Badge(
                 label: Text('5'),
-                child: Icon(Icons.search),
+                child: Icon(Icons.hourglass_empty),
               ),
               label: 'Pedidos',
             ),
             const NavigationDestination(
-              icon: Icon(Icons.people),
+              selectedIcon: Icon(Icons.people),
+              icon: Icon(Icons.people_alt_outlined),
               label: 'Tu cuenta',
             )
           ],
@@ -74,5 +76,23 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
         FadeInUp(child: const CuentaClienteScreen())
       ][currentPageIndex],
     );
+  }
+}
+
+class _IconoNavegacion extends StatelessWidget {
+  final Icon icono;
+  const _IconoNavegacion({
+    required this.numeroIndicador, required this.icono,
+  });
+
+  final int numeroIndicador;
+
+  @override
+  Widget build(BuildContext context) {
+    return Badge(
+        label: numeroIndicador > 0 ? Text("$numeroIndicador") : null,
+        backgroundColor:
+            numeroIndicador > 0 ? Colors.green : Colors.grey,
+        child:  icono);
   }
 }

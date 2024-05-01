@@ -26,11 +26,7 @@ class DetallePedido {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
         "cantidad": cantidad,
-        "subtotal": subtotal,
-        "valor_descontado": valorDescontado,
-        "promocion_aplicada": promocionAplicada,
-        "producto": producto.toJson(),
+        "producto": producto.toJsonPedido(),
       };
 }

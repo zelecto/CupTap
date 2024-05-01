@@ -1,19 +1,19 @@
 import 'package:cutap/entity/pedido/estado.dart';
 import 'package:cutap/entity/pedido/detalle_pedido.dart';
 
-
+//TODO Agregar usuario
 class Pedido{
-  final int id;
-  final DateTime  fechaRegistro;
-  final double total;
+  final int? id;
+  final DateTime?  fechaRegistro;
+  final double? total;
   final List<DetallePedido> detalles;
   final EstadoPedido estado;
   
 
   Pedido({
-    required this.id,
-    required this.fechaRegistro,
-    required this.total,
+    this.id,
+    this.fechaRegistro,
+    this.total,
     required this.detalles,
     required this.estado
   });
@@ -27,7 +27,7 @@ class Pedido{
       );
 
   Map<String, dynamic> toJson() => {
-        //"usuario": usuario.toJson(),
+        "usuario":  {"cedula": "1003238420"},
         "estado": estado.toJson(),
         "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
       };

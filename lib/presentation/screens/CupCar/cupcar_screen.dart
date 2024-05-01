@@ -1,5 +1,8 @@
+import 'package:cutap/Base/bd_pedido/pedido_api_service.dart';
 import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/entity/pedido/detalle_pedido.dart';
+import 'package:cutap/entity/pedido/estado.dart';
+import 'package:cutap/entity/pedido/pedido.dart';
 import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +16,17 @@ class CupCarScreen extends ConsumerStatefulWidget {
 }
 
 class CupCarScreenState extends ConsumerState<CupCarScreen> {
+  PedidoApiService pedidoApiService = PedidoApiService();
+  Future<void> guardarPedido(Pedido pedido) async {
+    final respuesta = await pedidoApiService.postPedido(pedido);
+    if (respuesta) {
+      ref.read(detallesPedidoProvider.notifier).clearListaDetalles();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    
     final List<DetallePedido> listaDetalles = ref.watch(detallesPedidoProvider);
     double totalPagar = 0;
     for (var element in listaDetalles) {
@@ -62,7 +74,8 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              const TextoConNegrita(texto: "Total", fontSize: 20),
+                              const TextoConNegrita(
+                                  texto: "Total", fontSize: 20),
                               const Spacer(),
                               TextoConNegrita(
                                   texto: "$totalPagar", fontSize: 20),
@@ -85,7 +98,13 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
                               ),
                               const Spacer(),
                               FilledButton(
-                                onPressed: () {},
+                                //TODO: IMPLEMENTACION DE GUARDADO DE PEDIDO
+                                onPressed: () {
+                                  Pedido pedido = Pedido(
+                                      detalles: listaDetalles,
+                                      estado: EstadoPedido(nombre: "estado 3"));
+                                      guardarPedido(pedido);
+                                },
                                 child: const Text("PAGAR"),
                               ),
                             ],

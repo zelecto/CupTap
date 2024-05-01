@@ -15,5 +15,9 @@ class DetallesPedido extends _$DetallesPedido {
   void eliminarDetalle(DetallePedido detallePedido){
     state = state.where((detalle) => detalle != detallePedido).toList();
   }
+
+  void clearListaDetalles(){
+    state = [];
+  }
 }
 

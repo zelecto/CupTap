@@ -1,60 +1,38 @@
-import 'package:cutap/config/api/api_request.dart';
-import 'package:cutap/infrastructure/models/usuarios_model.dart';
+import 'package:cutap/presentation/blocs/register/register_cubit.dart';
 import 'package:cutap/presentation/screens/Widgets/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen> {
-  //Controlador del formulario
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  //Controladores de los textFormFields
-  final _cedulaController = TextEditingController();
-  final _nombreController = TextEditingController();
-  final _apellidosController = TextEditingController();
-  final _telefonoController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _repeatedPasswordController = TextEditingController();
-
-  Future register() async {
-    final usuario = Usuario(
-            cedula: _cedulaController.text,
-            nombre: _nombreController.text,
-            apellidos: _apellidosController.text,
-            telefono: _telefonoController.text,
-            username: _usernameController.text,
-            password: _passwordController.text)
-        .toJson();
-
-    final response =
-        ApiRequest(methodType: 'post', endpoint: '/Usuarios', data: usuario);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final registerCubit = context.watch<RegisterCubit>();
+    final cedula = registerCubit.state.cedula;
+    final nombre = registerCubit.state.nombre;
+    final apellidos = registerCubit.state.apellidos;
+    final telefono = registerCubit.state.telefono;
+    final username = registerCubit.state.username;
+    final password = registerCubit.state.password;
+
     return Scaffold(
         backgroundColor: Colors.grey[300],
         body: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   //Logo
-                  Image.asset('assets/images/CupTapLogo.png',
-                      width: 125, height: 125),
+                  SafeArea(
+                    child: Image.asset('assets/images/CupTapLogo.png',
+                        width: 125, height: 125),
+                  ),
 
-                  // Mensajes de bienvenida
+                  // Mensaje de bienvenida
                   const Text(
                     'Creemos una cuenta para ti',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -63,64 +41,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20),
 
                   CustomTextFormField(
-                      controller: _cedulaController,
-                      hint: 'Cedula',
-                      validator: (value) {
-                        if (value == null || value.isEmpty)
-                          return 'Campo requerido';
-                        if (value.trim().isEmpty) return 'Campo requerido';
-                        if (value.length < 6) return 'Mas de 6 letras';
-
-                        return null;
-                      }),
-
-                  const SizedBox(height: 10),
-
-                  CustomTextFormField(
-                      controller: _nombreController, hint: 'Nombre'),
-
-                  const SizedBox(height: 10),
-
-                  CustomTextFormField(
-                      controller: _apellidosController, hint: 'Apellidos'),
-
-                  const SizedBox(height: 10),
-
-                  CustomTextFormField(
-                      controller: _telefonoController, hint: 'Telefono'),
-
-                  const SizedBox(height: 10),
-
-                  CustomTextFormField(
-                      controller: _usernameController,
-                      hint: 'Nombre de usuario'),
-
-                  const SizedBox(height: 10),
-
-                  CustomTextFormField(
-                    controller: _passwordController,
-                    hint: 'Contraseña',
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty)
-                        return 'Campo requerido';
-                      if (value.trim().isEmpty) return 'Campo requerido';
-                      if (value.length < 6) return 'Mas de 6 letras';
-
-                      final passwordRegExp = RegExp(
-                          r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$');
-
-                      if (!passwordRegExp.hasMatch(value))
-                        return 'Minimo 8 caracteres, una letra, un numero y un caracter especial';
-
-                      return null;
-                    },
+                    onChanged: registerCubit.cedulaChanged,
+                    errorMessage: cedula.getErrorMessage,
+                    hint: 'Cedula',
                   ),
 
                   const SizedBox(height: 10),
 
                   CustomTextFormField(
-                    controller: _repeatedPasswordController,
+                    hint: 'Nombre',
+                    errorMessage: nombre.getErrorMessage,
+                    onChanged: registerCubit.nombreChanged,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  CustomTextFormField(
+                    hint: 'Apellidos',
+                    errorMessage: apellidos.getErrorMessage,
+                    onChanged: registerCubit.apellidosChanged,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  CustomTextFormField(
+                    hint: 'Telefono',
+                    errorMessage: telefono.getErrorMessage,
+                    onChanged: registerCubit.telefonoChanged,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  CustomTextFormField(
+                    hint: 'Nombre de usuario',
+                    errorMessage: username.getErrorMessage,
+                    onChanged: registerCubit.usernameChanged,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  CustomTextFormField(
+                    hint: 'Contraseña',
+                    obscureText: true,
+                    onChanged: registerCubit.passwordChanged,
+                    errorMessage: password.getErrorMessage,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  const CustomTextFormField(
                     hint: 'Repetir contraseña',
                     obscureText: true,
                   ),
@@ -132,8 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: InkWell(
                       onTap: () {
-                        final isValid = _formKey.currentState!.validate();
-                        if (!isValid) return;
+                        registerCubit.onSubmit();
                       },
                       child: Container(
                         padding: const EdgeInsets.all(15),
@@ -171,6 +139,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
+
+                  const SizedBox(height: 25),
                 ],
               ),
             ),

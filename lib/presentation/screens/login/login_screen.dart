@@ -1,6 +1,6 @@
 // import 'package:dio/dio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cutap/infrastructure/models/usuarios_model.dart';
+import 'package:cutap/domain/models/usuarios_model.dart';
 import 'package:cutap/presentation/screens/Widgets/inputs/custom_inputs.dart';
 import 'package:cutap/presentation/widgets/square_tile.dart';
 // import 'package:cutap/config/api/api_request.dart';
@@ -88,7 +88,6 @@ class _LoginState extends State<LoginScreen> {
               const SizedBox(height: 40),
 
               CustomTextFormField(
-                controller: _usernameController,
                 hint: 'Nombre de usuario',
               ),
 
@@ -96,7 +95,6 @@ class _LoginState extends State<LoginScreen> {
 
               //Contraseña textfield
               CustomTextFormField(
-                controller: _passwordController,
                 hint: 'Contraseña',
                 obscureText: true,
               ),

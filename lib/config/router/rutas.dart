@@ -1,6 +1,8 @@
+import 'package:cutap/presentation/blocs/register/register_cubit.dart';
 import 'package:cutap/presentation/screens/Widgets/barra_navegacion.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cutap/presentation/screens/screens.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // GoRouter configuration
 final appRouter = GoRouter(
@@ -12,7 +14,10 @@ final appRouter = GoRouter(
     ),
     GoRoute(
         path: '/register_screen',
-        builder: (context, state) => const RegisterScreen()),
+        builder: (context, state) => BlocProvider(
+              create: (context) => RegisterCubit(),
+              child: const RegisterScreen(),
+            )),
     GoRoute(
       path: '/home',
       builder: (context, state) => Home(),

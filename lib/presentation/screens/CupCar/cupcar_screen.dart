@@ -1,9 +1,11 @@
 import 'package:cutap/Base/bd_pedido/pedido_api_service.dart';
 import 'package:cutap/config/Screeb/screen_size.dart';
+import 'package:cutap/config/api/api_request.dart';
 import 'package:cutap/entity/pedido/detalle_pedido.dart';
 import 'package:cutap/entity/pedido/estado.dart';
 import 'package:cutap/entity/pedido/pedido.dart';
 import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
+import 'package:cutap/presentation/provider/producto/producto_provider.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,17 +18,34 @@ class CupCarScreen extends ConsumerStatefulWidget {
 }
 
 class CupCarScreenState extends ConsumerState<CupCarScreen> {
-  PedidoApiService pedidoApiService = PedidoApiService();
-  Future<void> guardarPedido(Pedido pedido) async {
-    final respuesta = await pedidoApiService.postPedido(pedido);
-    if (respuesta) {
-      ref.read(detallesPedidoProvider.notifier).clearListaDetalles();
+  bool isLoading=false;
+
+  Future<void> postPedido(Pedido pedido) async {
+    ApiRequest apiRequest = ApiRequest(
+      methodType: "post",
+      endpoint: "https://cuptapapi.onrender.com/v1/Pedidos",
+      data: pedido.toJson(),
+    );
+    apiRequest.loading.listen((event) {
+      print("Estoy cargando");
+      isLoading = event;
+      setState(() {
+        
+      });
+    });
+
+    final response = await apiRequest.request(); // Esperar la respuesta de la solicitud HTTP
+    
+    if(response.statusCode==200 && response.data["success"]){
+      ref.invalidate(consultaProductosProvider);
+      ref.invalidate(detallesPedidoProvider);
     }
+      
+    
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final List<DetallePedido> listaDetalles = ref.watch(detallesPedidoProvider);
     double totalPagar = 0;
     for (var element in listaDetalles) {
@@ -36,7 +55,7 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
         appBar: crearAppbar(
             "Consulta tu carrito", const Icon(Icons.shopping_bag_outlined)),
         body: listaDetalles.isNotEmpty
-            ? CustomScrollView(
+            ? isLoading ?  const CircularProgressIndicator()  : CustomScrollView(
                 slivers: [
                   SliverPadding(
                     padding: const EdgeInsets.all(15),
@@ -99,11 +118,13 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
                               const Spacer(),
                               FilledButton(
                                 //TODO: IMPLEMENTACION DE GUARDADO DE PEDIDO
-                                onPressed: () {
+                                onPressed: () async {
                                   Pedido pedido = Pedido(
                                       detalles: listaDetalles,
-                                      estado: EstadoPedido(nombre: "estado 3"));
-                                      guardarPedido(pedido);
+                                      estado:
+                                          EstadoPedido(nombre: "Pendiente"));
+                                  await postPedido(pedido);
+                                  
                                 },
                                 child: const Text("PAGAR"),
                               ),
@@ -220,22 +241,29 @@ class CupCarVacioView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 70, horizontal: 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(
             child: SizedBox(
-              width: ScreenSize.screenWidth * 0.6,
-              height: ScreenSize.screenHeight * 0.5,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.5,
               child: Image.asset(
                 "assets/images/CupCarVacio.png",
                 fit: BoxFit.contain,
               ),
             ),
           ),
-          const TextoConNegrita(texto: "Tu carrito esta vacio", fontSize: 32)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 40),
+            child: Text(
+              "Tu carrito está vacío",
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+          )
         ],
       ),
     );

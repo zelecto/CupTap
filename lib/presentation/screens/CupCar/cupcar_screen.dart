@@ -1,4 +1,3 @@
-import 'package:cutap/Base/bd_pedido/pedido_api_service.dart';
 import 'package:cutap/config/Screeb/screen_size.dart';
 import 'package:cutap/config/api/api_request.dart';
 import 'package:cutap/entity/pedido/detalle_pedido.dart';
@@ -27,7 +26,6 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
       data: pedido.toJson(),
     );
     apiRequest.loading.listen((event) {
-      print("Estoy cargando");
       isLoading = event;
       setState(() {
         

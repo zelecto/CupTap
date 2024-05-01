@@ -106,8 +106,7 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
             blurRadius: 5,
             offset: const Offset(1, 8),
           ),
-        ], 
-        borderRadius: BorderRadius.circular(15), color: Colors.white),
+        ], borderRadius: BorderRadius.circular(15), color: Colors.white),
         child: Stack(
           children: [
             Container(
@@ -283,8 +282,7 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
                         cantidad: cantidadventa,
                         subtotal: subTotal,
                         producto: widget.contexto.producto);
-                    ref
-                        .read(detallesPedidoProvider.notifier)
+                    ref.read(detallesPedidoProvider.notifier)
                         .agregarDetalle(detallePedido);
                     Navigator.pop(context);
                   },

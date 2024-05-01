@@ -10,9 +10,15 @@ class ProductApiService {
         endpoint: "https://cuptapapi.onrender.com/v1/Productos",
         data: null
     );
+    try {
     final response = await apiRequest.request();
     var listaProductos = List<Producto>.from(
-        response.data["data"].map((x) => Producto.fromJson(x)));
-    return listaProductos;
+          response.data["data"].map((x) => Producto.fromJson(x)));
+      return listaProductos;
+    } catch (e) {
+      return[];
+    }
+    
   }
 }
+

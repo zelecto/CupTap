@@ -4,7 +4,7 @@ class Usuario {
     final String apellidos;
     final String telefono;
     final String username;
-    final String password;
+    final String? password;
 
     Usuario({
         required this.cedula,
@@ -12,7 +12,7 @@ class Usuario {
         required this.apellidos,
         required this.telefono,
         required this.username,
-        required this.password,
+        this.password,
     });
 
     factory Usuario.fromJson(Map<String, dynamic> json) => Usuario(
@@ -21,7 +21,6 @@ class Usuario {
         apellidos: json["apellidos"],
         telefono: json["telefono"],
         username: json["username"],
-        password: json["password"],
     );
 
     Map<String, dynamic> toJson() => {

@@ -1,3 +1,4 @@
+import 'package:cutap/presentation/blocs/login/login_cubit.dart';
 import 'package:cutap/presentation/blocs/register/register_cubit.dart';
 import 'package:cutap/presentation/screens/Widgets/barra_navegacion.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +11,10 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => BlocProvider(
+        create: (context) => LoginCubit(),
+        child: const LoginScreen(),
+      ),
     ),
     GoRoute(
         path: '/register_screen',

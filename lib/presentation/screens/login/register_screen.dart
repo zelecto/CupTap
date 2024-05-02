@@ -3,6 +3,7 @@ import 'package:cutap/presentation/screens/Widgets/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:quickalert/quickalert.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -17,6 +18,22 @@ class RegisterScreen extends StatelessWidget {
     final telefono = registerCubit.state.telefono;
     final username = registerCubit.state.username;
     final password = registerCubit.state.password;
+    final confirmedPassword = registerCubit.state.confirmedPassword;
+    final isValid = registerCubit.state.isValid;
+    final formStatus = registerCubit.state.formStatus;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (formStatus == FormStatus.submissionSuccess) {
+        QuickAlert.show(
+            title: 'Éxito', context: context, type: QuickAlertType.success);
+      } else if (formStatus == FormStatus.submissionFailure) {
+        QuickAlert.show(
+            title: 'No se ha podido crear el usuario',
+            context: context,
+            type: QuickAlertType.error,
+            autoCloseDuration: Duration(seconds: 3));
+      }
+    });
 
     return Scaffold(
         backgroundColor: Colors.grey[300],
@@ -89,9 +106,11 @@ class RegisterScreen extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  const CustomTextFormField(
+                  CustomTextFormField(
                     hint: 'Repetir contraseña',
                     obscureText: true,
+                    onChanged: registerCubit.confirmedPasswordChanged,
+                    errorMessage: confirmedPassword.getErrorMessage,
                   ),
 
                   const SizedBox(height: 25),
@@ -100,21 +119,35 @@ class RegisterScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: InkWell(
-                      onTap: () {
-                        registerCubit.onSubmit();
-                      },
+                      onTap: !isValid
+                          ? null
+                          : () {
+                              registerCubit.onSubmit();
+                            },
                       child: Container(
                         padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Colors.blueAccent),
-                        child: const Center(
-                            child: Text('Registrarse',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ))),
+                            color: !isValid
+                                ? Colors.blue[700]
+                                : Colors.blueAccent),
+                        child: Center(
+                            child: (formStatus == FormStatus.posting)
+                                ? const SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text('Registrarse',
+                                    style: TextStyle(
+                                      color:
+                                          !isValid ? Colors.grey : Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ))),
                       ),
                     ),
                   ),

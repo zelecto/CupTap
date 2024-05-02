@@ -1,62 +1,25 @@
 // import 'package:dio/dio.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cutap/domain/models/usuarios_model.dart';
+import 'package:cutap/presentation/blocs/login/login_cubit.dart';
 import 'package:cutap/presentation/screens/Widgets/inputs/custom_inputs.dart';
 import 'package:cutap/presentation/widgets/square_tile.dart';
-// import 'package:cutap/config/api/api_request.dart';
-import 'package:dio/dio.dart';
+// import 'package:cutap/config/api/api_request.dart'
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginState();
-}
-
-class _LoginState extends State<LoginScreen> {
-  //Controladores de los text fields.
-  final dio = Dio();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  // Variable para rastrear si la llamada a la API está en curso
-  bool _isLoading = false;
-
-  Future signIn() async {
-    setState(() {
-      _isLoading = true; // Comienza la llamada a la API
-    });
-
-    final db = FirebaseFirestore.instance;
-    List<Usuario> firebaseUsers = await db.collection("admins").get().then((value) =>
-        value.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
-
-    String username = _usernameController.text;
-    String password = _passwordController.text;
-
-    try {
-      if (firebaseUsers.any((usuario) =>
-          usuario.username == username && usuario.password == password)) {
-        if (mounted) {
-          context.go("/barraNavegacion");
-        }
-      }
-    } catch (err) {
-      print(err);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false; // Termina la llamada a la API
-        });
-      }
-    }
-  }
-
+  // Future signIn() async {
   @override
   Widget build(BuildContext context) {
+    final loginCubit = context.watch<LoginCubit>();
+    final username = loginCubit.state.username;
+    final password = loginCubit.state.password;
+    final formStatus = loginCubit.state.formStatus;
+    final isValid = loginCubit.state.isValid;
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: Center(
@@ -88,6 +51,8 @@ class _LoginState extends State<LoginScreen> {
               const SizedBox(height: 40),
 
               CustomTextFormField(
+                onChanged: loginCubit.usernameChanged,
+                errorMessage: username.getErrorMessage,
                 hint: 'Nombre de usuario',
               ),
 
@@ -96,6 +61,8 @@ class _LoginState extends State<LoginScreen> {
               //Contraseña textfield
               CustomTextFormField(
                 hint: 'Contraseña',
+                onChanged: loginCubit.passwordChanged,
+                errorMessage: password.getErrorMessage,
                 obscureText: true,
               ),
 
@@ -105,15 +72,16 @@ class _LoginState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: InkWell(
-                  onTap: _isLoading ? null : signIn,
+                  onTap: isValid ? () => loginCubit.onSubmit(context) : null,
                   child: Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color:
-                            _isLoading ? Colors.blue[700] : Colors.blueAccent),
+                        color: !isValid || formStatus == FormStatus.posting
+                            ? Colors.blue[700]
+                            : Colors.blueAccent),
                     child: Center(
-                        child: _isLoading
+                        child: formStatus == FormStatus.posting
                             ? const SizedBox(
                                 height: 30,
                                 width: 30,
@@ -121,10 +89,10 @@ class _LoginState extends State<LoginScreen> {
                                   color: Colors.white,
                                   strokeWidth: 2,
                                 ),
-                              ) // Muestra un indicador de progreso durante la llamada a la API
-                            : const Text('Iniciar sesión',
+                              )
+                            : Text('Iniciar sesión',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: !isValid ? Colors.grey : Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                 ))),

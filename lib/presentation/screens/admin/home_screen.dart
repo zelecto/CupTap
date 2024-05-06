@@ -9,6 +9,9 @@ class HomeScreen extends StatelessWidget {
 
   final viewRoutes = <Widget>[
     const HomeView(),
+    const StatisticsView(),
+    const EntityManagerView(),
+    const SettingsView(),
   ];
 
   @override

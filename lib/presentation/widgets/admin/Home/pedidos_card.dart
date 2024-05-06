@@ -3,10 +3,10 @@ import 'package:cutap/presentation/widgets/admin/Home/pedido_subitem.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class PedidosBox extends StatelessWidget {
+class PedidosCard extends StatelessWidget {
   final Pedido pedido;
 
-  const PedidosBox(
+  const PedidosCard(
       {super.key, required this.pedido});
 
   @override
@@ -66,9 +66,9 @@ class PedidosBox extends StatelessWidget {
                   children: [
                     Text(
                       pedido.estado.nombre,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 13,
-                          color: Colors.black87,
+                          color: Colors.amber[800],
                           fontWeight: FontWeight.w600),
                     ),
                   ],

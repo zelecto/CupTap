@@ -1,5 +1,5 @@
 import 'package:cutap/domain/models/modelos.dart';
-import 'package:cutap/presentation/widgets/admin/Home/pedidos_box.dart';
+import 'package:cutap/presentation/widgets/admin/Home/pedidos_card.dart';
 import 'package:cutap/utils/api/api_request.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +76,10 @@ class _HomeViewState extends State<HomeView> {
           const SizedBox(height: 20),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: const Text('Tus pedidos activos'),
+            child: const Text(
+              'Tus pedidos activos',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(height: 10),
           Expanded(
@@ -85,7 +88,7 @@ class _HomeViewState extends State<HomeView> {
               itemCount: pedidos.length,
               itemBuilder: (context, index) {
                 final pedido = pedidos[index];
-                return PedidosBox(
+                return PedidosCard(
                   pedido: pedido,
                 );
               },

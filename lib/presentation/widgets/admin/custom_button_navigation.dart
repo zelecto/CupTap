@@ -18,6 +18,9 @@ class CustomBottomNavigation extends StatelessWidget {
       case 2:
         context.go('/admins/home/2');
         break;
+      case 3:
+        context.go('/admins/home/3');
+        break;
     }
   }
 
@@ -42,12 +45,12 @@ class CustomBottomNavigation extends StatelessWidget {
               text: 'Home',
             ),
             GButton(
-              icon: Icons.favorite_border,
-              text: 'Likes',
+              icon: Icons.bar_chart_sharp,
+              text: 'Estadisticas',
             ),
             GButton(
-              icon: Icons.search,
-              text: 'Search',
+              icon: Icons.edit_square,
+              text: 'Gestión',
             ),
             GButton(
               icon: Icons.settings,

@@ -3,7 +3,7 @@ class Usuario {
     final String nombre;
     final String apellidos;
     final String telefono;
-    final String username;
+    final String? username;
     final String? password;
 
     Usuario({
@@ -11,7 +11,7 @@ class Usuario {
         required this.nombre,
         required this.apellidos,
         required this.telefono,
-        required this.username,
+        this.username,
         this.password,
     });
 

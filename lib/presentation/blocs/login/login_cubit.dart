@@ -14,7 +14,7 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginFormState> {
   LoginCubit() : super(const LoginFormState());
 
-  void onSubmit( BuildContext context ) async {
+  void onSubmit(BuildContext context) async {
     emit(state.copyWith(
       formStatus: FormStatus.validating,
       username: LUsername.dirty(state.username.value),
@@ -40,10 +40,14 @@ class LoginCubit extends Cubit<LoginFormState> {
           response.data['data'].map((usuario) => Usuario.fromJson(usuario)));
 
       if (usuarios.any((usuario) => usuario.username == state.username.value)) {
-        context.go('/barraNavegacion');
+        if (context.mounted) {
+          context.go('/barraNavegacion');
+        }
       } else if (firebaseUsers
           .any((usuario) => usuario.username == state.username.value)) {
-        context.go('/barraNavegacion2');
+        if (context.mounted) {
+          context.go('/admins/home/0');
+        }
       }
     } catch (e) {
       print('Error: $e');

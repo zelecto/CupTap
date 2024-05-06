@@ -1,7 +1,7 @@
 // import 'package:dio/dio.dart';
 import 'package:cutap/presentation/blocs/login/login_cubit.dart';
 import 'package:cutap/presentation/screens/Widgets/inputs/custom_inputs.dart';
-import 'package:cutap/presentation/widgets/square_tile.dart';
+import 'package:cutap/presentation/widgets/Login/square_tile.dart';
 // import 'package:cutap/config/api/api_request.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

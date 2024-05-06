@@ -1,27 +1,35 @@
 import 'package:cutap/presentation/blocs/login/login_cubit.dart';
 import 'package:cutap/presentation/blocs/register/register_cubit.dart';
 import 'package:cutap/presentation/screens/Widgets/barra_navegacion.dart';
+import 'package:cutap/presentation/screens/admin/home_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cutap/presentation/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // GoRouter configuration
 final appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/admins/home/0',
   routes: [
     GoRoute(
-      path: '/',
-      builder: (context, state) => BlocProvider(
-        create: (context) => LoginCubit(),
-        child: const LoginScreen(),
-      ),
-    ),
+        path: '/',
+        builder: (context, state) => BlocProvider(
+              create: (context) => LoginCubit(),
+              child: const LoginScreen(),
+            )),
     GoRoute(
         path: '/register_screen',
         builder: (context, state) => BlocProvider(
               create: (context) => RegisterCubit(),
               child: const RegisterScreen(),
             )),
+    GoRoute(
+      path: '/admins/home/:page',
+      builder: (context, state) {
+        final pageIndex = int.parse(state.pathParameters['page'] ?? '0');
+
+        return HomeScreen(pageIndex: pageIndex);
+      },
+    ),
     GoRoute(
       path: '/home',
       builder: (context, state) => Home(),

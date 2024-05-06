@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const colorList = <Color>[
   Colors.blue,
@@ -24,6 +25,7 @@ class AppTheme {
         'Selected color must be less or equal than ${ colorList.length - 1 }');
 
   ThemeData getTheme() => ThemeData(
+    textTheme: GoogleFonts.interTextTheme(),
     useMaterial3: true,
     colorSchemeSeed: colorList[ selectedColor ],
     appBarTheme:  AppBarTheme(

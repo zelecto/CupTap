@@ -1,5 +1,4 @@
 import 'package:cutap/domain/models/modelos.dart';
-import 'package:cutap/entity/tools/pedidos_sceens_tools/automatic_scrooll_tool.dart';
 import 'package:cutap/presentation/widgets/admin/Home/pedidos_box.dart';
 import 'package:cutap/utils/api/api_request.dart';
 import 'package:dio/dio.dart';

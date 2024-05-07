@@ -1,6 +1,6 @@
 import 'package:cutap/presentation/blocs/login/login_cubit.dart';
 import 'package:cutap/presentation/blocs/register/register_cubit.dart';
-import 'package:cutap/presentation/screens/Widgets/barra_navegacion.dart';
+import 'package:cutap/presentation/widgets/client/barra_navegacion.dart';
 import 'package:cutap/presentation/screens/admin/home_screen.dart';
 import 'package:cutap/presentation/screens/admin/products_screen.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import 'package:cutap/entity/producto/producto.dart';
+import 'package:cutap/domain/models/producto/producto.dart';
 class DetallePedido {
   int? id;
   int cantidad;

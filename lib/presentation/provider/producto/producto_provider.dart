@@ -1,6 +1,6 @@
 
 import 'package:cutap/Base/producto/product_api_service.dart';
-import 'package:cutap/entity/producto/producto.dart';
+import 'package:cutap/domain/models/producto/producto.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'producto_provider.g.dart';

@@ -1,5 +1,5 @@
-import 'package:cutap/entity/pedido/estado.dart';
-import 'package:cutap/entity/pedido/detalle_pedido.dart';
+import 'package:cutap/domain/models/pedido/estado.dart';
+import 'package:cutap/domain/models/pedido/detalle_pedido.dart';
 
 //TODO Agregar usuario
 class Pedido {

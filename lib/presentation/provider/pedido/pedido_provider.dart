@@ -1,7 +1,7 @@
 
 
 import 'package:cutap/Base/bd_pedido/pedido_api_service.dart';
-import 'package:cutap/entity/pedido/pedido.dart';
+import 'package:cutap/domain/models/pedido/pedido.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pedido_provider.g.dart';

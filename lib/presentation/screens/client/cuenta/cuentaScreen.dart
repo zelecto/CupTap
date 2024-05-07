@@ -1,5 +1,5 @@
 import 'package:cutap/config/MenuCuentaCliente/MenuItemeCliente.dart';
-import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
+import 'package:cutap/presentation/widgets/client/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

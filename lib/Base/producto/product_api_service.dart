@@ -1,5 +1,5 @@
 import 'package:cutap/utils/api/api_request.dart';
-import 'package:cutap/entity/producto/producto.dart';
+import 'package:cutap/domain/models/producto/producto.dart';
 
 
 class ProductApiService {

@@ -1,10 +1,10 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
 
-import 'package:cutap/entity/pedido/detalle_pedido.dart';
-import 'package:cutap/entity/pedido/pedido.dart';
-import 'package:cutap/entity/tools/pedidos_sceens_tools/automatic_scrooll_tool.dart';
+import 'package:cutap/domain/models/pedido/detalle_pedido.dart';
+import 'package:cutap/domain/models/pedido/pedido.dart';
+import 'package:cutap/utils/pedidos_sceens_tools/automatic_scrooll_tool.dart';
 import 'package:cutap/presentation/provider/pedido/pedido_provider.dart';
-import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
+import 'package:cutap/presentation/widgets/client/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

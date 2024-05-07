@@ -1,5 +1,5 @@
 import 'package:cutap/presentation/blocs/register/register_cubit.dart';
-import 'package:cutap/presentation/screens/Widgets/inputs/custom_inputs.dart';
+import 'package:cutap/presentation/widgets/client/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

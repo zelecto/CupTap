@@ -1,10 +1,10 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
-import 'package:cutap/entity/pedido/detalle_pedido.dart';
-import 'package:cutap/entity/producto/producto.dart';
+import 'package:cutap/domain/models/pedido/detalle_pedido.dart';
+import 'package:cutap/domain/models/producto/producto.dart';
 import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
 import 'package:cutap/presentation/provider/producto/producto_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
+import 'package:cutap/presentation/widgets/client/widgets_reutilizables.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Home extends ConsumerStatefulWidget {

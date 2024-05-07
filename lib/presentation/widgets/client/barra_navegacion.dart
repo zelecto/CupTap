@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cutap/entity/pedido/detalle_pedido.dart';
+import 'package:cutap/domain/models/pedido/detalle_pedido.dart';
 import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
-import 'package:cutap/presentation/screens/cuenta/cuentaScreen.dart';
+import 'package:cutap/presentation/screens/client/cuenta/cuentaScreen.dart';
 import 'package:cutap/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

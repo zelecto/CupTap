@@ -13,7 +13,7 @@ class CuentaClienteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CrearAppbar("Cuenta", Icon(Icons.settings)),
+      appBar: crearAppbar("Cuenta", Icon(Icons.settings)),
       body: const _HomeView(),
     );
   }

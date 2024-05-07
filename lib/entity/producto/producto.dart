@@ -37,4 +37,7 @@ class Producto {
         "venta_activa": ventaActiva,
         "imagen": imgUrl,
     };
+    Map<String, dynamic> toJsonPedido() => {
+        "nombre": nombre,
+      };
 }

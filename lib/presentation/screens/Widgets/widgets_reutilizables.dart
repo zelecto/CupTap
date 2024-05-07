@@ -1,13 +1,13 @@
+
 import 'package:flutter/material.dart';
 
 //TODO Arreglar el tamaño del texto del adbar
-AppBar CrearAppbar(String subtile, Widget icono){
+AppBar crearAppbar(String subtile, Widget icono){
   return  AppBar(
-    
-    centerTitle: true,
     title:  Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TextoAppBar(subTitle: subtile),
+        Expanded(child: TextoAppBar(subTitle: subtile)),
         icono,
       ],
     ),
@@ -23,15 +23,16 @@ class TextoAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Expanded(
+    return  Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const TextoConNegrita(texto: "Cuptap",fontSize: 30.0),
+          const TextoConNegrita(texto: "Cuptap",fontSize: 30),
           Text(
             subTitle,
             style: const TextStyle(fontSize: 20),
           ),
+          
         ],
       ),
     );
@@ -41,8 +42,9 @@ class TextoAppBar extends StatelessWidget {
 class TextoConNegrita extends StatelessWidget {
   final String texto;
   final double fontSize;
+  final Color? color;
   const TextoConNegrita({
-    super.key, required this.texto, required this.fontSize,
+    super.key, required this.texto, required this.fontSize, this.color=Colors.black,
   });
 
   @override
@@ -50,8 +52,9 @@ class TextoConNegrita extends StatelessWidget {
     return  Text(
       texto,
       style:  TextStyle(
-        fontWeight: FontWeight.bold, // Negrita
-        fontSize: fontSize, // Tamaño de fuente
+        fontWeight: FontWeight.bold, 
+        fontSize: fontSize, 
+        color: color
       ),
     );
   }

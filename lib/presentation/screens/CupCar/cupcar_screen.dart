@@ -1,199 +1,268 @@
+import 'package:cutap/config/Screeb/screen_size.dart';
+import 'package:cutap/config/api/api_request.dart';
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
+import 'package:cutap/entity/pedido/estado.dart';
+import 'package:cutap/entity/pedido/pedido.dart';
+import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
+import 'package:cutap/presentation/provider/producto/producto_provider.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CupCarScreen extends StatefulWidget {
+class CupCarScreen extends ConsumerStatefulWidget {
   const CupCarScreen({super.key});
 
   @override
-  State<CupCarScreen> createState() => _CupCarScreenState();
+  CupCarScreenState createState() => CupCarScreenState();
 }
 
-class _CupCarScreenState extends State<CupCarScreen> {
+class CupCarScreenState extends ConsumerState<CupCarScreen> {
+  bool isLoading=false;
+
+  Future<void> postPedido(Pedido pedido) async {
+    ApiRequest apiRequest = ApiRequest(
+      methodType: "post",
+      endpoint: "https://cuptapapi.onrender.com/v1/Pedidos",
+      data: pedido.toJson(),
+    );
+    apiRequest.loading.listen((event) {
+      isLoading = event;
+      setState(() {
+        
+      });
+    });
+
+    final response = await apiRequest.request(); // Esperar la respuesta de la solicitud HTTP
+    
+    if(response.statusCode==200 && response.data["success"]){
+      ref.invalidate(consultaProductosProvider);
+      ref.invalidate(detallesPedidoProvider);
+    }
+      
+    
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<DetallePedido> listaDetalles = ref.watch(detallesPedidoProvider);
+    double totalPagar = 0;
+    for (var element in listaDetalles) {
+      totalPagar += element.subtotal;
+    }
     return Scaffold(
-      appBar: CrearAppbar(
-          "Realiza tus pedidos", const Icon(Icons.shopping_bag_outlined)),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 40, 20, 40),
-        child: SingleChildScrollView(
-
-          child: Column(
-            children: [
-              const TextoConNegrita(
-                fontSize: 25,
-                texto: "TU COMPRA",
-              ),
-              const Divider(
-                color: Colors.black38,
-                thickness: 3,
-              ),
-              
-              const _MyCardPedido(
-                  "Empanada",
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGSZU9NZXEIFylmIrCbu7D6L9g8vxRAooAWw&usqp=CAU",
-                  10000,
-                  100000,
-                  100),
-              const _MyCardPedido(
-                  "Patacon",
-                  "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
-                  10000,
-                  100000,
-                  100),
-              const _MyCardPedido(
-                  "Papa",
-                  "https://mojo.generalmills.com/api/public/content/E7Xi4th4mk-_NectBDhpNg_gmi_hi_res_jpeg.jpeg?v=6106f73d&t=16e3ce250f244648bef28c5949fb99ff",
-                  10000,
-                  100000,
-                  100),
-          
-              const SizedBox(height: 10,),
-              Container(
-                
-                constraints: const BoxConstraints(maxWidth: double.infinity),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      FilledButton(
-                        onPressed: () {},
-                        child: const Text("RESERVAR"),
-                      ),
-                      const Spacer(),
-                      FilledButton(
-                        onPressed: () {},
-                        child: const Text("PAGAR"),
-                      ),
-                    ],
+        appBar: crearAppbar(
+            "Consulta tu carrito", const Icon(Icons.shopping_bag_outlined)),
+        body: listaDetalles.isNotEmpty
+            ? isLoading ?  const CircularProgressIndicator()  : CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.all(15),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        SizedBox(
+                          height: ScreenSize.screenHeight * 0.01,
+                        )
+                      ]),
+                    ),
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+                  SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      childAspectRatio: 3,
+                      mainAxisSpacing: 20,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: _MyCardPedido(
+                              detallePedido: listaDetalles[index],
+                            ));
+                      },
+                      childCount: listaDetalles.length,
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              const TextoConNegrita(
+                                  texto: "Total", fontSize: 20),
+                              const Spacer(),
+                              TextoConNegrita(
+                                  texto: "$totalPagar", fontSize: 20),
+                              const Icon(Icons.attach_money)
+                            ],
+                          ),
+                        ),
+                        const Divider(
+                          height: 20,
+                          color: Colors.black38,
+                          thickness: 3,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              FilledButton(
+                                onPressed: () {},
+                                child: const Text("RESERVAR"),
+                              ),
+                              const Spacer(),
+                              FilledButton(
+                                //TODO: IMPLEMENTACION DE GUARDADO DE PEDIDO
+                                onPressed: () async {
+                                  Pedido pedido = Pedido(
+                                      detalles: listaDetalles,
+                                      estado:
+                                          EstadoPedido(nombre: "Pendiente"));
+                                  await postPedido(pedido);
+                                  
+                                },
+                                child: const Text("PAGAR"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
+                    ),
+                  )
+                ],
+              )
+            : const CupCarVacioView());
   }
 }
 
-class _MyCardPedido extends StatelessWidget {
-  final String nameProduct;
-  final String imgUrl;
-  final double precioCobrar;
-  final double totalPagar;
-  final int cantidadVendida;
-  
+class _MyCardPedido extends ConsumerWidget {
+  final DetallePedido detallePedido;
 
-  const _MyCardPedido(
-    this.nameProduct, 
-    this.imgUrl, 
-    this.precioCobrar,
-    this.totalPagar, this.cantidadVendida
-  );
+  const _MyCardPedido({required this.detallePedido});
+  TextStyle estiloTexto(Color color) {
+    return TextStyle(fontSize: 18, color: color, fontWeight: FontWeight.w600);
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final double widthDisponible = MediaQuery.of(context).size.width;
-    final double heightDisponible = MediaQuery.of(context).size.height;
-    return SizedBox(
-      height: heightDisponible*0.24,
-      child: Card(
-        surfaceTintColor: Colors.white,
-        elevation: 5,
-        child: Column(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(5, 5),
+          ),
+        ],
+      ),
+      child: Stack(children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: SizedBox(
-                    width: widthDisponible*0.40,
-                    height: heightDisponible*0.13,
-                    child: Image.network(imgUrl, fit: BoxFit.cover),
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: SizedBox(
+                width: ScreenSize.screenWidth * 0.40,
+                height: ScreenSize.screenHeight * 0.15,
+                //TODO: Implementra imagenes
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.network(
+                      "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
+                      fit: BoxFit.cover),
                 ),
-                SizedBox(
-                  width: widthDisponible*0.40,
-                  height: widthDisponible*0.34,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+              ),
+            ),
+            SizedBox(
+              width: ScreenSize.screenWidth * 0.40,
+              height: ScreenSize.screenHeight * 0.20,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextoConNegrita(
+                      texto: detallePedido.producto.nombre, fontSize: 25),
+                  Text("${detallePedido.cantidad} U",
+                      style: estiloTexto(Colors.grey.shade600)),
+                  Row(
                     children: [
-                      TextoConNegrita(texto: nameProduct, fontSize: 25),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: Text(
-                          "\$$precioCobrar  C/U",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 18),
-                        ),
+                      Text(
+                        "${detallePedido.subtotal} ",
+                        textAlign: TextAlign.center,
+                        style: estiloTexto(Colors.blue),
                       ),
-                      //Pie de tarjeta
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                  Icons.remove_circle_outline_rounded)),
-                          SizedBox(
-                            width: widthDisponible*0.08,
-                            height: heightDisponible*0.02,
-                            child: const TextField(
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                  Icons.add_circle_outline_outlined)),
-                        ],
+                      const Icon(
+                        Icons.attach_money,
+                        color: Colors.blue,
+                        size: 20,
                       )
                     ],
                   ),
-                )
-              ],
-            ),
-            const Divider(
-              color: Colors.black54,
-              thickness: 3,
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FilledButton(
-                      onPressed: () {
-                      //TODO metodo de eliminacion
-                    }, 
-                    child: Text("Eliminar"),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.redAccent
-                      
-                    ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      "SubTotal:   $totalPagar ",
-                      style: const TextStyle(fontSize: 19),
-                    ),
-                    const Icon(Icons.monetization_on_outlined,)
-                  ],
-                ),
+                ],
               ),
             )
           ],
         ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Container(
+            decoration: const BoxDecoration(
+                color: Colors.red,
+                borderRadius:
+                    BorderRadius.horizontal(left: Radius.circular(15))),
+            child: IconButton(
+                onPressed: () {
+                  ref
+                      .read(detallesPedidoProvider.notifier)
+                      .eliminarDetalle(detallePedido);
+                },
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.white,
+                )),
+          ),
+        )
+      ]),
+    );
+  }
+}
+
+class CupCarVacioView extends StatelessWidget {
+  const CupCarVacioView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 70, horizontal: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Image.asset(
+                "assets/images/CupCarVacio.png",
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 40),
+            child: Text(
+              "Tu carrito está vacío",
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
       ),
     );
   }

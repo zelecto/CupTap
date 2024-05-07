@@ -1,81 +1,62 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
-import 'package:cutap/entity/pedido/datos_prueba.dart';
-import 'package:cutap/entity/pedido/venta_producto.dart';
+
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
+import 'package:cutap/entity/pedido/pedido.dart';
 import 'package:cutap/entity/tools/pedidos_sceens_tools/automatic_scrooll_tool.dart';
+import 'package:cutap/presentation/provider/pedido/pedido_provider.dart';
 import 'package:cutap/presentation/screens/Widgets/widgets_reutilizables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-class PedidosScreen extends StatefulWidget {
+class PedidosScreen extends ConsumerStatefulWidget {
   const PedidosScreen({super.key});
 
   @override
-  State<PedidosScreen> createState() => _PedidosScreenState();
+  PedidosScreenState createState() => PedidosScreenState();
 }
 
-class _PedidosScreenState extends State<PedidosScreen> {
-  int currentPageIndex = 0;
+class PedidosScreenState extends ConsumerState<PedidosScreen> {
   @override
   Widget build(BuildContext context) {
+    //TODO IMPLEMENTAR USUARIO
+    final pedidoAsync = ref.watch(consultaPedidoProvider("1003238420"));
     return Scaffold(
-      appBar: CrearAppbar("Pedidos", const Icon(Icons.shopping_bag_outlined)),
-      body: Column(
-        children: [
-          NavigationBar(
-            onDestinationSelected: (int index) {
-              setState(() {
-                currentPageIndex = index;
-              });
-            },
-            backgroundColor: Colors.white,
-            indicatorColor: Colors.purple.shade100,
-            selectedIndex: currentPageIndex,
-            destinations: const [
-              NavigationDestination(
-                  icon: Icon(Icons.access_time), label: "Pendiente"),
-              NavigationDestination(
-                  icon: Icon(Icons.check_circle_outline), label: "Finalizados"),
-            ],
+        appBar: crearAppbar("Pedidos", const Icon(Icons.shopping_bag_outlined)),
+        body: pedidoAsync.when(
+          data: (data) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: _MyCardPedido(
+                listaPedidos: data,
+              ),
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: currentPageIndex != 0
-                ? const TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Buscar...',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                  )
-                : null,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-            child: currentPageIndex == 0
-                ? const _MyCardPedido()
-                : const Text("Destruir mundo"),
-          ),
-        ],
-      ),
-    );
+          error: (error, stackTrace) => Text("$error"),
+          loading: () => const CircularProgressIndicator(),
+        ));
   }
 }
 
 class _MyCardPedido extends StatefulWidget {
-  const _MyCardPedido();
+  final List<Pedido> listaPedidos;
+  const _MyCardPedido({required this.listaPedidos});
   @override
-  State<_MyCardPedido> createState() => _MyCardPedidoState();
+  MyCardPedidoState createState() => MyCardPedidoState();
 }
 
-class _MyCardPedidoState extends State<_MyCardPedido> {
-  final listaPedidos = listaPedidosPrueba;
+class MyCardPedidoState extends State<_MyCardPedido> {
+  //TODO: Consulta en la base de datos
   late List<AutomaticScroollTool> _automaticScroollTools;
 
   @override
   void initState() {
     super.initState();
-    _automaticScroollTools = listaPedidos
+
+    _automaticScroollTools = widget.listaPedidos
         .map((pedido) =>
-            AutomaticScroollTool(cantidadPagina: pedido.ventaProducto.length))
+            AutomaticScroollTool(cantidadPagina: pedido.detalles.length))
         .toList();
   }
 
@@ -88,88 +69,119 @@ class _MyCardPedidoState extends State<_MyCardPedido> {
     super.dispose();
   }
 
-  
+  void fechData() async {}
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: ScreenSize.screenHeight * 0.7,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1, mainAxisSpacing: 10, childAspectRatio: 1.35),
-        itemCount: listaPedidos.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              
-                for (int i = 0; i < listaPedidos.length; i++) {
-                  if (index != i) {
-                    _automaticScroollTools[i].cancelarScroll(false);
+    // TODO  IMPLEMENTAR USUARIO
+
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              const TextField(
+                decoration: InputDecoration(
+                  hintText: 'Buscar...',
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
+            ]),
+          ),
+        ),
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1, mainAxisSpacing: 10, childAspectRatio: 1.35),
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  for (int i = 0; i < widget.listaPedidos.length; i++) {
+                    if (index != i) {
+                      _automaticScroollTools[i].cancelarScroll(false);
+                    }
                   }
-                }
-              
-              
-              _automaticScroollTools[index].cancelarScroll(false);
-              _automaticScroollTools[index].starScrollTimer();
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(width: 2),
-                  borderRadius: BorderRadius.circular(15)),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      children: [
-                        Text("#Pedido : ${listaPedidos[index].id}"),
-                        const Spacer(),
-                        Text("Fecha : ${listaPedidos[index].fechaRegistro}"),
-                      ],
-                    ),
-                  ),
-                  _DetallePedidoReelView(
-                    listaVentas: listaPedidos[index].ventaProducto,
-                    automaticScroollTool: _automaticScroollTools[index],
-                  ),
-                  const Divider(
-                    height: 5,
-                    color: Colors.black,
-                  ),
-                  //Pie de tarjeta
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    height: ScreenSize.screenHeight * 0.06,
-                    child: Row(
-                      children: [
-                        Text("Total : ${listaPedidos[index].total}"),
-                        const Spacer(),
-                        FilledButton.icon(
-                          onPressed: () {},
-                          label: Text("Pagado"),
-                          icon: Icon(Icons.check_rounded),
+
+                  _automaticScroollTools[index].cancelarScroll(false);
+                  _automaticScroollTools[index].starScrollTimer();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(1, 8),
                         ),
                       ],
-                    ),
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Row(
+                          children: [
+                            Text("#Pedido : ${widget.listaPedidos[index].id}"),
+                            const Spacer(),
+                            Text(
+                                "${widget.listaPedidos[index].fechaRegistro?.day}/${widget.listaPedidos[index].fechaRegistro?.month}/${widget.listaPedidos[index].fechaRegistro?.year}"),
+                          ],
+                        ),
+                      ),
+                      _DetallePedidoReelView(
+                        listaVentas: widget.listaPedidos[index].detalles,
+                        automaticScroollTool: _automaticScroollTools[index],
+                      ),
+                      const Divider(
+                        height: 5,
+                        color: Colors.black,
+                      ),
+                      //Pie de tarjeta
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        height: ScreenSize.screenHeight * 0.06,
+                        child: Row(
+                          children: [
+                            Text("Total : ${widget.listaPedidos[index].total}"),
+                            const Spacer(),
+                            widget.listaPedidos[index].estado.nombre ==
+                                    "Pendiente"
+                                ? FilledButton.icon(
+                                    onPressed: () {},
+                                    label: const Text("Pendiente"),
+                                    icon: const Icon(Icons.check_rounded),
+                                  )
+                                : FilledButton.icon(
+                                    onPressed: null,
+                                    label: const Text("Pagado"),
+                                    icon: const Icon(Icons.check_rounded),
+                                  ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+            childCount: widget.listaPedidos.length,
+          ),
+        ),
+      ],
     );
   }
 }
 
-
 class _DetallePedidoReelView extends StatefulWidget {
-  final List<VentaProducto> listaVentas;
+  final List<DetallePedido> listaVentas;
   final AutomaticScroollTool automaticScroollTool;
-  const _DetallePedidoReelView({required this.listaVentas, required this.automaticScroollTool});
-
+  const _DetallePedidoReelView(
+      {required this.listaVentas, required this.automaticScroollTool});
 
   @override
   State<_DetallePedidoReelView> createState() => _DetallePedidoReelViewState();
@@ -196,7 +208,6 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
 
   @override
   Widget build(BuildContext context) {
-    
     return SizedBox(
       height: ScreenSize.screenHeight * 0.2,
       child: Stack(
@@ -226,21 +237,22 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
                       height: ScreenSize.screenHeight * 0.12,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
+                        //TODO implementar fotos de la base de datos
                         child: Image.network(
-                          widget.listaVentas[index].producto.imgUrl ??  "Imagen por defecto"  ,
-                          fit: BoxFit.fill, //Imagen adaptativa
+                          "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
+                          fit: BoxFit.cover, //Imagen adaptativa
                         ),
                       ),
                     ),
+                    // TODO: implementar los pedidos por base de datos
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                       child: Row(
                         children: [
                           Text(
-                              "Cantidad : ${widget.listaVentas[index].cantidaVendida}"),
+                              "Cantidad : ${widget.listaVentas[index].cantidad}"),
                           const Spacer(),
-                          Text(
-                              "Precio ${widget.listaVentas[index].subPrecioCobro}"),
+                          Text("Precio ${widget.listaVentas[index].subtotal}"),
                         ],
                       ),
                     ),
@@ -281,4 +293,3 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
     );
   }
 }
-

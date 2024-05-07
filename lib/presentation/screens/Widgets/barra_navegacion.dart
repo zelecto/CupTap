@@ -1,67 +1,98 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:cutap/entity/pedido/detalle_pedido.dart';
+import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
 import 'package:cutap/presentation/screens/cuenta/cuentaScreen.dart';
 import 'package:cutap/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-class NavigationExample extends StatefulWidget {
+class NavigationExample extends ConsumerStatefulWidget {
   const NavigationExample({super.key});
 
   @override
-  State<NavigationExample> createState() => NavigationExampleState();
+  NavigationExampleState createState() => NavigationExampleState();
 }
 
-class NavigationExampleState extends State<NavigationExample> {
+class NavigationExampleState extends ConsumerState<NavigationExample> {
   int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final List<DetallePedido> listaDetalles = ref.watch(detallesPedidoProvider);
+    final int numeroDetalles = listaDetalles.length;
+
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        indicatorColor: Colors.purple.shade100,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Principal',
-          ),
-          NavigationDestination(
-            icon: Badge(backgroundColor: Colors.green,child: Icon(Icons.add_shopping_cart_sharp),),
-            label: 'CupCar',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              label: Text('5'),
-              child: Icon(Icons.search),
+      bottomNavigationBar: FadeInUp(
+        child: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          indicatorColor: Colors.blue.shade100,
+          selectedIndex: currentPageIndex,
+          destinations: <Widget>[
+            const NavigationDestination(
+              selectedIcon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              label: 'Principal',
             ),
-            label: 'Pedidos',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.people),
-            label: 'Tu cuenta',
-          ),
-        ],
+            NavigationDestination(
+              selectedIcon:  _IconoNavegacion(numeroIndicador: numeroDetalles, icono: const Icon(Icons.shopping_bag_rounded)),
+              icon: _IconoNavegacion(
+                numeroIndicador: numeroDetalles, 
+                icono: const Icon(Icons.shopping_bag_outlined),
+                ),
+              label: 'CupCar',
+            ),
+            const NavigationDestination(
+              selectedIcon: Icon(Icons.hourglass_full),
+              icon: Badge(
+                label: Text('5'),
+                child: Icon(Icons.hourglass_empty),
+              ),
+              label: 'Pedidos',
+            ),
+            const NavigationDestination(
+              selectedIcon: Icon(Icons.people),
+              icon: Icon(Icons.people_alt_outlined),
+              label: 'Tu cuenta',
+            )
+          ],
+        ),
       ),
-      body: <Widget>[
+      body: [
         /// Home page
-        Home(),
+        FadeInDown(child: const Home()),
 
         /// Pedidos Page
-         
-       const CupCarScreen(),
+
+        FadeInLeft(child: const CupCarScreen()),
 
         /// Consultas Page
-        const PedidosScreen(),
+        FadeInRight(child: const PedidosScreen()),
 
         //CuentaCliente Page
-        const CuentaClienteScreen()
+        FadeInUp(child: const CuentaClienteScreen())
       ][currentPageIndex],
     );
+  }
+}
+
+class _IconoNavegacion extends StatelessWidget {
+  final Icon icono;
+  const _IconoNavegacion({
+    required this.numeroIndicador, required this.icono,
+  });
+
+  final int numeroIndicador;
+
+  @override
+  Widget build(BuildContext context) {
+    return Badge(
+        label: numeroIndicador > 0 ? Text("$numeroIndicador") : null,
+        backgroundColor:
+            numeroIndicador > 0 ? Colors.green : Colors.grey,
+        child:  icono);
   }
 }

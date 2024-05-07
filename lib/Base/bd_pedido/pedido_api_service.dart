@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:cutap/config/api/api_request.dart';
+import 'package:cutap/utils/api/api_request.dart';
 import 'package:cutap/entity/pedido/pedido.dart';
 
 class PedidoApiService {
   Future<List<Pedido>> getPedidoUser(String cedula) async {
     ApiRequest apiRequest = ApiRequest(
         methodType: "get",
-        endpoint: "https://cuptapapi.onrender.com/v1/Usuarios/$cedula/pedidos",
+        endpoint: "/Usuarios/$cedula/pedidos",
         data: null);
     try {
       final response = await apiRequest.request();

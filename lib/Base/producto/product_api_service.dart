@@ -1,4 +1,4 @@
-import 'package:cutap/config/api/api_request.dart';
+import 'package:cutap/utils/api/api_request.dart';
 import 'package:cutap/entity/producto/producto.dart';
 
 
@@ -7,7 +7,7 @@ class ProductApiService {
   Future<List<Producto>> getAllProducts() async {
     final apiRequest = ApiRequest(
         methodType: "get",
-        endpoint: "https://cuptapapi.onrender.com/v1/Productos",
+        endpoint: "/Productos",
         data: null
     );
     try {

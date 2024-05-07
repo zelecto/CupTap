@@ -21,7 +21,7 @@ Widget _buildEntityScreen(String tipo) {
 
 // GoRouter configuration
 final appRouter = GoRouter(
-  initialLocation: '/admins/home/0',
+  initialLocation: '/',
   routes: [
     GoRoute(
         path: '/',
@@ -52,7 +52,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/home',
-      builder: (context, state) => Home(),
+      builder: (context, state) => const Home(),
     ),
     GoRoute(
       path: '/barraNavegacion',

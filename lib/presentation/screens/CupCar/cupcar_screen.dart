@@ -1,5 +1,5 @@
 import 'package:cutap/config/Screeb/screen_size.dart';
-import 'package:cutap/config/api/api_request.dart';
+import 'package:cutap/utils/api/api_request.dart';
 import 'package:cutap/entity/pedido/detalle_pedido.dart';
 import 'package:cutap/entity/pedido/estado.dart';
 import 'package:cutap/entity/pedido/pedido.dart';
@@ -22,7 +22,7 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
   Future<void> postPedido(Pedido pedido) async {
     ApiRequest apiRequest = ApiRequest(
       methodType: "post",
-      endpoint: "https://cuptapapi.onrender.com/v1/Pedidos",
+      endpoint: "/Pedidos",
       data: pedido.toJson(),
     );
     apiRequest.loading.listen((event) {

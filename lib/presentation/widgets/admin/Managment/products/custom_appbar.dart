@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final String actionText;
+  final Widget? actionText;
   final Widget? leading;
   final Widget? titleWidget;
   final Color? bgColor;
@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleWidget,
     this.bgColor = Colors.white,
     required this.showAction,
-    required this.actionText,
+    this.actionText,
   });
 
   @override
@@ -60,19 +60,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                 if (showAction)
                   Transform.translate(
-                      offset: const Offset(10, 0),
-                      child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            actionText,
-                            style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF5B9EE1)),
-                          ),
-                        ),
-                      )),
+                    offset: const Offset(10, 0),
+                    child: InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: actionText,
+                      ),
+                    ),
+                  )
               ],
             )
           ],

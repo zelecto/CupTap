@@ -89,6 +89,7 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 final pedido = pedidos[index];
                 return PedidosCard(
+                  isSold: false,
                   pedido: pedido,
                 );
               },

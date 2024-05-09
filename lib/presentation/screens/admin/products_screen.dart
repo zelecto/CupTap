@@ -87,9 +87,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: const CustomAppBar(
         title: 'Tus productos',
-        actionText: 'Guardar',
-        bgColor: Color(0xFFF8F9FA),
         showAction: true,
+        bgColor: Color(0xFFF8F9FA),
+        actionText: Text(
+                            'Guardar',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF5B9EE1)),
+        
+        ),
       ),
       body: Column(
         children: [

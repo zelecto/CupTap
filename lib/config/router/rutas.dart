@@ -1,5 +1,7 @@
 import 'package:cutap/presentation/blocs/login/login_cubit.dart';
 import 'package:cutap/presentation/blocs/register/register_cubit.dart';
+import 'package:cutap/presentation/screens/admin/orders_screen.dart';
+import 'package:cutap/presentation/screens/client/account/account.dart';
 import 'package:cutap/presentation/widgets/client/barra_navegacion.dart';
 import 'package:cutap/presentation/screens/admin/home_screen.dart';
 import 'package:cutap/presentation/screens/admin/products_screen.dart';
@@ -12,8 +14,8 @@ Widget _buildEntityScreen(String tipo) {
   switch (tipo) {
     case 'products':
       return const ProductsScreen();
-    // case 'pedido':
-    //   return DetallePedidoScreen();
+    case 'orders':
+    return const OrdersScreen();
     default: 
       return Container();
   }
@@ -65,6 +67,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/Pedidos',
       builder: (context, state) => const PedidosScreen(),
+    ),
+    GoRoute(
+      path: '/Account',
+      builder: (context, state) => const Account(),
     ),
   ],
 );

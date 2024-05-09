@@ -5,9 +5,10 @@ import 'package:intl/intl.dart';
 
 class PedidosCard extends StatelessWidget {
   final Pedido pedido;
+  final bool? isSold;
 
   const PedidosCard(
-      {super.key, required this.pedido});
+      {super.key, required this.pedido, this.isSold = true});
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +40,10 @@ class PedidosCard extends StatelessWidget {
                     Text(
                       NumberFormat.currency(symbol: 'COP\$', decimalDigits: 0)
                           .format(pedido.total),
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 19,
-                          color: Colors.black),
+                          color: isSold! ? Colors.green : Colors.black87),
                     )
                   ],
                 ),
@@ -65,10 +66,10 @@ class PedidosCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      pedido.estado.nombre,
+                      isSold! ? 'Vendido' : pedido.estado.nombre,
                       style: TextStyle(
                           fontSize: 13,
-                          color: Colors.amber[800],
+                          color: isSold! ? Colors.green : Colors.amber[800],
                           fontWeight: FontWeight.w600),
                     ),
                   ],

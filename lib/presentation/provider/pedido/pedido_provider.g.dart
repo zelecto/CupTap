@@ -6,7 +6,7 @@ part of 'pedido_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$consultaPedidoHash() => r'c5bc692ebb2241d851fc5b720d25672f2b991053';
+String _$consultaPedidoHash() => r'8bf724c9285a4bed2201a3996db9def87e51f2bc';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -156,6 +156,20 @@ class _ConsultaPedidoProviderElement
   String get cedula => (origin as ConsultaPedidoProvider).cedula;
 }
 
+String _$numeroPedidoHash() => r'27a2b40d53d19c205488f1007b03a685074a677e';
+
+/// See also [numeroPedido].
+@ProviderFor(numeroPedido)
+final numeroPedidoProvider = AutoDisposeProvider<int>.internal(
+  numeroPedido,
+  name: r'numeroPedidoProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$numeroPedidoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef NumeroPedidoRef = AutoDisposeProviderRef<int>;
 String _$pedidoEstadoHash() => r'a7ae6f0e3c98ae72021087437b440aa9e4110556';
 
 /// See also [PedidoEstado].

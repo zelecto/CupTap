@@ -22,7 +22,7 @@ class PedidosScreenState extends ConsumerState<PedidosScreen> {
     //TODO IMPLEMENTAR USUARIO
     final pedidoAsync = ref.watch(consultaPedidoProvider("1003238420"));
     return Scaffold(
-        appBar: crearAppbar("Pedidos", const Icon(Icons.shopping_bag_outlined)),
+        appBar: crearAppbar("Pedidos",context),
         body: pedidoAsync.when(
           data: (data) => Padding(
             padding: const EdgeInsets.all(8.0),
@@ -34,7 +34,8 @@ class PedidosScreenState extends ConsumerState<PedidosScreen> {
             ),
           ),
           error: (error, stackTrace) => Text("$error"),
-          loading: () => const CircularProgressIndicator(),
+          loading: () => const Expanded(
+                child: Center(child: CircularProgressIndicator())),
         ));
   }
 }

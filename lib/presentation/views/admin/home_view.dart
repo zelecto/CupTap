@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Future<List<Pedido>> fetchPedidos() async {
+Future<List<Pedido>> fetchPedidosss() async {
   final request =
       ApiRequest(methodType: 'get', endpoint: '/Pedidos', data: null);
   final Response response = await request.request();
@@ -34,7 +34,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> loadPedidos() async {
-    pedidos = await fetchPedidos();
+    pedidos = await fetchPedidosss();
     setState(() {});
   }
 
@@ -89,6 +89,7 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 final pedido = pedidos[index];
                 return PedidosCard(
+                  isSold: false,
                   pedido: pedido,
                 );
               },

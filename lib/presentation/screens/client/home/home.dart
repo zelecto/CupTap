@@ -20,7 +20,7 @@ class HomeState extends ConsumerState<Home> {
     late List<Producto> listaProductos;
     final productosAsync = ref.watch(consultaProductosProvider);
     return Scaffold(
-        appBar: crearAppbar("Home", const Icon(Icons.home_outlined)),
+        appBar: crearAppbar("Home",context),
         body: productosAsync.when(
             data: (data) {
               listaProductos = data;
@@ -68,7 +68,9 @@ class HomeState extends ConsumerState<Home> {
               );
             },
             error: (error, stackTrace) => Text("$error"),
-            loading: () => const CircularProgressIndicator()));
+            loading: () => const Expanded(
+                child: Center(child: CircularProgressIndicator())))
+                );
   }
 }
 
@@ -138,12 +140,12 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
                           _realizarPedidoScreen(context);
                         },
                         icon: const Icon(
-                          Icons.add_circle_outline_outlined,
+                          Icons.add_circle_outline_rounded,
                           size: 20,
                           color: Color.fromARGB(255, 6, 229, 13),
                         ))
                     : const Icon(
-                        Icons.check,
+                        Icons.check_circle_outlined,
                         color: Colors.green,
                       ),
               ),
@@ -243,7 +245,7 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
                 icon: const Icon(Icons.remove_outlined)),
             Text(
               "$cantidadventa",
-              style: const TextStyle(fontSize: 20),
+              style:  TextStyle(fontSize: cantidadventa <10 ? 15:13),
             ),
             IconButton(
                 onPressed: () {
@@ -259,35 +261,37 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Row(
-            children: [
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red.shade700,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancelar",
-                  style: styleTextButton,
-                ),
-              ),
-              const Spacer(),
-              FilledButton(
+          child: SafeArea(
+            child: Row(
+              children: [
+                FilledButton(
                   style: FilledButton.styleFrom(
-                      backgroundColor: Colors.green.shade700),
+                    backgroundColor: Colors.red.shade700,
+                  ),
                   onPressed: () {
-                    DetallePedido detallePedido = DetallePedido(
-                        cantidad: cantidadventa,
-                        subtotal: subTotal,
-                        producto: widget.contexto.producto);
-                    ref.read(detallesPedidoProvider.notifier)
-                        .agregarDetalle(detallePedido);
                     Navigator.pop(context);
                   },
-                  child: Text("Agregar", style: styleTextButton)),
-            ],
+                  child: Text(
+                    "Cancelar",
+                    style: styleTextButton,
+                  ),
+                ),
+                const Spacer(),
+                FilledButton(
+                    style: FilledButton.styleFrom(
+                        backgroundColor: Colors.green.shade700),
+                    onPressed: () {
+                      DetallePedido detallePedido = DetallePedido(
+                          cantidad: cantidadventa,
+                          subtotal: subTotal,
+                          producto: widget.contexto.producto);
+                      ref.read(detallesPedidoProvider.notifier)
+                          .agregarDetalle(detallePedido);
+                      Navigator.pop(context);
+                    },
+                    child: Text("Agregar", style: styleTextButton)),
+              ],
+            ),
           ),
         )
       ],

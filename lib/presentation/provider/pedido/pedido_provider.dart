@@ -27,9 +27,14 @@ class PedidoEstado extends _$PedidoEstado {
 
 @Riverpod(keepAlive: false)
 Future<List<Pedido>> consultaPedido(ConsultaPedidoRef ref,String cedula) async {
-  print(await PedidoApiService().getPedidoUser(cedula));
   return PedidoApiService().getPedidoUser(cedula);
 }
 
+@Riverpod(keepAlive: false)
+int numeroPedido (NumeroPedidoRef ref) {
+  final List<Pedido> listaPedido = ref.watch(pedidoEstadoProvider);
+  print(listaPedido.length);
+  return listaPedido.length;
+}
 
 

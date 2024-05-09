@@ -1,14 +1,21 @@
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 //TODO Arreglar el tamaño del texto del adbar
-AppBar crearAppbar(String subtile, Widget icono){
+AppBar crearAppbar(String subtile, BuildContext context ){
+
   return  AppBar(
     title:  Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(child: TextoAppBar(subTitle: subtile)),
-        icono,
+        const Spacer(),
+        TextoAppBar(subTitle: subtile),
+        const Spacer(),
+        IconButton(onPressed: (){
+          context.push("/Account");
+        }, icon: const Icon(Icons.settings_outlined)),
       ],
     ),
   );

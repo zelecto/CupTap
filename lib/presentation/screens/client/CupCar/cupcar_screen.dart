@@ -51,7 +51,7 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
     }
     return Scaffold(
         appBar: crearAppbar(
-            "Consulta tu carrito", const Icon(Icons.shopping_bag_outlined)),
+            "Consulta tu carrito",context),
         body: listaDetalles.isNotEmpty
             ? isLoading ?  const CircularProgressIndicator()  : CustomScrollView(
                 slivers: [

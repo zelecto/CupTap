@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cutap/domain/models/pedido/detalle_pedido.dart';
 import 'package:cutap/presentation/provider/pedido/detalles_pedido_provider.dart';
-import 'package:cutap/presentation/screens/client/cuenta/cuentaScreen.dart';
+
 import 'package:cutap/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,18 +46,10 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
               label: 'CupCar',
             ),
             const NavigationDestination(
-              selectedIcon: Icon(Icons.hourglass_full),
-              icon: Badge(
-                label: Text('5'),
-                child: Icon(Icons.hourglass_empty),
-              ),
+              icon: Icon(Icons.hourglass_bottom_outlined),
               label: 'Pedidos',
             ),
-            const NavigationDestination(
-              selectedIcon: Icon(Icons.people),
-              icon: Icon(Icons.people_alt_outlined),
-              label: 'Tu cuenta',
-            )
+            
           ],
         ),
       ),
@@ -72,8 +64,6 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
         /// Consultas Page
         FadeInRight(child: const PedidosScreen()),
 
-        //CuentaCliente Page
-        FadeInUp(child: const CuentaClienteScreen())
       ][currentPageIndex],
     );
   }

@@ -17,7 +17,6 @@ class _EntityManagerViewState extends State<EntityManagerView> {
     ['Productos', Icons.local_dining_outlined, '/admins/products'],
     ['Pedidos', Icons.shopping_cart_outlined, '/admins/orders'],
     ['Promociones', Icons.local_offer_outlined, '/admins/discounts'],
-    ['', Icons.fastfood_outlined, '/admins/combos'],
   ];
 
   @override

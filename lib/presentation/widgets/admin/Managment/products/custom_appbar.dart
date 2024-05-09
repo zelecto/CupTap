@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final String actionText;
   final Widget? leading;
   final Widget? titleWidget;
+  final Color? bgColor;
+  final bool showAction;
 
-  const CustomAppBar(
-      {super.key, required this.title, this.leading, this.titleWidget});
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    this.leading,
+    this.titleWidget,
+    this.bgColor = Colors.white,
+    required this.showAction,
+    required this.actionText,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Container(
-      color: Colors.white,
+      color: bgColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25 / 2.5),
         child: Stack(
@@ -33,10 +44,35 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 leading ??
                     Transform.translate(
                       offset: const Offset(-14, 0),
-                      child: const BackButton(
-                        color: Colors.black,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Container(
+                          decoration: const BoxDecoration(color: Colors.white),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_left,
+                                color: Colors.black),
+                            onPressed: () {
+                              context.pop();
+                            },
+                          ),
+                        ),
                       ),
-                    )
+                    ),
+                if (showAction)
+                  Transform.translate(
+                      offset: const Offset(10, 0),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            actionText,
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF5B9EE1)),
+                          ),
+                        ),
+                      )),
               ],
             )
           ],

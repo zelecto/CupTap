@@ -28,8 +28,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     username: 'usuarioAleatorio',
     password: 'contraseñaAleatoria',
   );
-// Crear un detalle aleatorio
-  // Crear una lista de pedidos
+  
   List<Pedido> pedidos = [
     Pedido(
       id: 1,

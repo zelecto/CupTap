@@ -64,6 +64,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
   //   setState(() {});
   // }
 
+  void _addProduct(Producto producto) {
+  setState(() {
+    productos.add(producto);
+  });
+}
+
   void _openButtonTapped() {
     showModalBottomSheet(
         isScrollControlled: true,
@@ -75,7 +81,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             maxChildSize: 0.75,
             minChildSize: 0.1,
             builder: (context, scrollController) {
-              return CreateProductView(scrollController: scrollController,);
+              return CreateProductView(scrollController: scrollController, onProductCreated: _addProduct);
             },
           );
         });

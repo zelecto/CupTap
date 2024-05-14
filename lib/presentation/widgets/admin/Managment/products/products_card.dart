@@ -86,12 +86,15 @@ class ProductosCard extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            Container(
-              alignment: Alignment.bottomRight,
-              child: const Icon(
-                Iconsax.trash,
-                size: 30,
-                color: Color(0xFFF87265),
+            InkWell(
+              onTap: (){},
+              child: Container(
+                alignment: Alignment.bottomRight,
+                child: const Icon(
+                  Iconsax.trash,
+                  size: 30,
+                  color: Color(0xFFF87265),
+                ),
               ),
             )
           ],

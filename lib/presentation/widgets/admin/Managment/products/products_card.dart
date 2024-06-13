@@ -1,5 +1,6 @@
 import 'package:cutap/domain/models/modelos.dart';
 import 'package:cutap/presentation/blocs/products/products_cubit.dart';
+import 'package:cutap/presentation/blocs/stock/stock_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,9 +8,22 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 
-class ProductosCard extends StatelessWidget {
+class ProductosCard extends StatefulWidget {
   final Producto producto;
   const ProductosCard({super.key, required this.producto});
+
+  @override
+  State<ProductosCard> createState() => _ProductosCardState();
+}
+
+class _ProductosCardState extends State<ProductosCard> {
+  late int stock;
+
+  @override
+  void initState() {
+    super.initState();
+    stock = widget.producto.stock;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +43,14 @@ class ProductosCard extends StatelessWidget {
               width: 100,
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(16)),
-              child: Image(image: producto.imagen),
+              child: Image(image: widget.producto.imagen),
             ),
             const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  producto.nombre,
+                  widget.producto.nombre,
                   style: const TextStyle(
                       fontWeight: FontWeight.w700, fontSize: 20),
                 ),
@@ -44,15 +58,10 @@ class ProductosCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${NumberFormat.currency(symbol: '\$', decimalDigits: 0).format(producto.precio)}c/u',
+                      '${NumberFormat.currency(symbol: '\$', decimalDigits: 0).format(widget.producto.precio)}c/u',
                       style: const TextStyle(
                           fontWeight: FontWeight.w700, fontSize: 16),
                     ),
-                    const SizedBox(width: 3),
-                    const Icon(
-                      Iconsax.edit_2,
-                      color: Color.fromARGB(255, 186, 178, 178),
-                    )
                   ],
                 ),
                 const Spacer(),
@@ -60,6 +69,14 @@ class ProductosCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     InkWell(
+                      onTap: () {
+                        setState(() {
+                          if (stock > 0) stock--;
+                        });
+                        context
+                            .read<StockCubit>()
+                            .stockChanged(stock, widget.producto);
+                      },
                       child: Container(
                         height: 30,
                         width: 30,
@@ -71,12 +88,20 @@ class ProductosCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 16),
                     Text(
-                      producto.stock.toString(),
+                      stock.toString(),
                       style: const TextStyle(
                           fontWeight: FontWeight.w700, fontSize: 16),
                     ),
                     const SizedBox(width: 16),
                     InkWell(
+                      onTap: () {
+                        setState(() {
+                          stock++;
+                        });
+                        context
+                            .read<StockCubit>()
+                            .stockChanged(stock, widget.producto);
+                      },
                       child: Container(
                         height: 30,
                         width: 30,
@@ -149,7 +174,7 @@ class ProductosCard extends StatelessWidget {
                                         width: 300,
                                         child: ElevatedButton(
                                           onPressed: () async {
-                                            deleteProduct(producto);
+                                            deleteProduct(widget.producto);
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:

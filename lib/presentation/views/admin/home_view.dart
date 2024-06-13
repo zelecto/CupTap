@@ -12,7 +12,10 @@ Future<List<Pedido>> fetchPedidosss() async {
   final pedidos = List<Pedido>.from(
       response.data['data'].map((pedido) => Pedido.fromJson(pedido)));
 
-  return pedidos;
+  final pedidosPendientes =
+      pedidos.where((pedido) => pedido.estado.nombre == 'Pendiente').toList();
+
+  return pedidosPendientes;
 }
 
 class HomeView extends StatefulWidget {

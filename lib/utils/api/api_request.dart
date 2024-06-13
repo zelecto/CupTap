@@ -6,6 +6,7 @@ const methodTypes = <String>[
   "post",
   "put",
   "delete",
+  "patch",
 ];
 
 class ApiRequest {
@@ -28,7 +29,8 @@ class ApiRequest {
       'get': _dio.get,
       'post': _dio.post,
       'put': _dio.put,
-      'delete': _dio.delete
+      'delete': _dio.delete,
+      'patch': _dio.patch,
     };
 
     try {

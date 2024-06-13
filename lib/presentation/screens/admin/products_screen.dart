@@ -1,5 +1,6 @@
 import 'package:cutap/domain/models/modelos.dart';
 import 'package:cutap/presentation/blocs/products/products_cubit.dart';
+import 'package:cutap/presentation/blocs/stock/stock_cubit.dart';
 import 'package:cutap/presentation/views/admin/create_products_view.dart';
 import 'package:cutap/presentation/widgets/admin/Managment/products/custom_appbar.dart';
 import 'package:cutap/presentation/widgets/admin/Managment/products/products_card.dart';
@@ -30,6 +31,7 @@ class ProductsScreen extends StatefulWidget {
 class _ProductsScreenState extends State<ProductsScreen> {
   List<Producto> productos = [];
   bool isLoading = false; // Añade esta línea
+  bool stockChanged = false;
 
   @override
   void initState() {
@@ -46,6 +48,26 @@ class _ProductsScreenState extends State<ProductsScreen> {
     setState(() {
       isLoading = false; // Termina la carga
     });
+  }
+
+  Future<void> updateProducto(Producto producto, int cantidad) async {
+    final request = ApiRequest(
+      methodType: 'patch',
+      endpoint:
+          '/Productos/${producto.nombre}/cantidad/$cantidad?operation=update',
+      data: null,
+    );
+
+    try {
+      final Response response = await request.request();
+      if (response.statusCode == 200) {
+        loadProductos();
+      } else {
+        print('Error al actualizar el producto');
+      }
+    } catch (e) {
+      print('Error al realizar la solicitud: $e');
+    }
   }
 
   void _openButtonTapped() {
@@ -71,10 +93,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final formStatusWatcher = context.watch<ProductsCubit>();
+    final stockCubit = context.watch<StockCubit>();
+    StockChanged? stockChangedState = null;
+    if (stockCubit.state is StockChanged) {
+      stockChangedState = stockCubit.state as StockChanged;
+      stockChanged = true;
+    }
 
     return BlocListener<ProductsCubit, ProductsFormState>(
         listener: (context, state) {
-          print(state);
           if (formStatusWatcher.state.formStatus == FormStatus.created ||
               formStatusWatcher.state.formStatus == FormStatus.deleted) {
             // Realiza la operación asíncrona primero
@@ -85,6 +112,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
               });
             });
           }
+
+          if (state is StockChanged) stockChanged = true;
         },
         child: Scaffold(
           backgroundColor: const Color(0xFFF8F9FA),
@@ -92,13 +121,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
             title: 'Tus productos',
             showAction: true,
             bgColor: const Color(0xFFF8F9FA),
-            onTap: () => loadProductos(),
-            actionText: const Text(
+            onTap: !stockChanged || stockChangedState == null
+                ? null
+                : () => updateProducto(
+                    stockChangedState!.producto, stockChangedState.newStock),
+            actionText: Text(
               'Guardar',
               style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF5B9EE1)),
+                  color: stockChanged ? Colors.green : const Color(0xFF5B9EE1)),
             ),
           ),
           body: Column(
@@ -119,10 +151,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         child:
                             isLoading // Si está cargando, muestra un skeleton
                                 ? const Center(
-                                    child:
-                                        CircularProgressIndicator()) // Reemplaza esto con tu widget de skeleton
+                                    child: CircularProgressIndicator())
                                 : ListView.builder(
-                                    // Si no está cargando, muestra la lista
                                     itemCount: productos.length,
                                     itemBuilder: (context, index) {
                                       final producto = productos[index];

@@ -64,11 +64,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Transform.translate(
                     offset: const Offset(10, 0),
                     child: InkWell(
-                      onTap: onTap,
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: actionText,
                       ),
+                      onTap: onTap,
                     ),
                   )
               ],

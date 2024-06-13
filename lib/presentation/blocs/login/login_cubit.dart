@@ -79,9 +79,6 @@ class LoginCubit extends Cubit<LoginFormState> {
         .then((value) =>
             value.docs.map((doc) => Usuario.fromJson(doc.data())).toList());
 
-            print(user.username + user.password);
-            print("hola ${firebaseUsers[0]}");
-
     return firebaseUsers.any((usuario) =>
         usuario.username == user.username && usuario.password == user.password);
   }

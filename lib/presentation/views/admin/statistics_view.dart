@@ -15,7 +15,12 @@ Future<List<Pedido>> fetchPedidos() async {
   final pedidos = List<Pedido>.from(
       response.data['data'].map((pedido) => Pedido.fromJson(pedido)));
 
-  return pedidos;
+  final pedidosRealizados =
+      pedidos.where((pedido) => pedido.estado == 'Realizado').toList();
+
+  print(pedidosRealizados.toString());
+
+  return pedidosRealizados;
 }
 
 class StatisticsView extends StatefulWidget {
@@ -27,6 +32,21 @@ class StatisticsView extends StatefulWidget {
 
 class _StatisticsViewState extends State<StatisticsView> {
   List<Pedido> pedidos = [];
+
+  void calculateProductosMasVendidos() {
+    Map<String, int> productosMasVendidos = {};
+    List<Pedido> pedidosRealizados = pedidos.where((pedido) => pedido.estado == 'Realizado').toList();
+  
+    // for (var pedido in pedidosRealizados) {
+    //   for (var producto in pedido.productos) {
+    //     if (productosMasVendidos.containsKey(producto.nombre)) {
+    //       productosMasVendidos[producto.nombre]++;
+    //     } else {
+    //       productosMasVendidos[producto.nombre] = 1;
+    //     }
+    //   }
+    // }
+  }
 
   @override
   void initState() {
@@ -137,7 +157,8 @@ class _StatisticsViewState extends State<StatisticsView> {
                         child: Align(
                           alignment: Alignment.center,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center, // Añade esta línea
+                            mainAxisAlignment:
+                                MainAxisAlignment.center, // Añade esta línea
                             children: [
                               Text(
                                 '25%',
@@ -149,10 +170,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                               Text(
                                 'Ganancias',
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey
-                                ),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.grey),
                               ),
                             ],
                           ),

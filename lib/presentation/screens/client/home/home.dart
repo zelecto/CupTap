@@ -32,17 +32,12 @@ class HomeState extends ConsumerState<Home> {
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         const TextoConNegrita(
-                          texto: "Bienvenido, usuario",
+                          texto: "Bienvenido",
                           fontSize: 25,
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Buscar...',
-                              prefixIcon: Icon(Icons.search),
-                            ),
-                          ),
+                          child: SizedBox(width: 10,)
                         ),
                         const _ConsultarArticulosView(),
                       ]),

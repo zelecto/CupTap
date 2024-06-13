@@ -78,19 +78,7 @@ class MyCardPedidoState extends State<_MyCardPedido> {
 
     return CustomScrollView(
       slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Buscar...',
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-            ]),
-          ),
-        ),
+        
         SliverGrid(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1, mainAxisSpacing: 10, childAspectRatio: 1.35),
@@ -239,8 +227,8 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         //TODO implementar fotos de la base de datos
-                        child: Image.network(
-                          "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
+                        child: Image(
+                          image:  widget.listaVentas[index].producto.img,
                           fit: BoxFit.cover, //Imagen adaptativa
                         ),
                       ),

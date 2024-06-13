@@ -8,6 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? titleWidget;
   final Color? bgColor;
   final bool showAction;
+  final void Function()? onTap;
 
   const CustomAppBar({
     super.key,
@@ -17,6 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bgColor = Colors.white,
     required this.showAction,
     this.actionText,
+    this.onTap,
   });
 
   @override
@@ -62,6 +64,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Transform.translate(
                     offset: const Offset(10, 0),
                     child: InkWell(
+                      onTap: onTap,
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: actionText,

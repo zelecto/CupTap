@@ -14,8 +14,8 @@ class _EntityManagerViewState extends State<EntityManagerView> {
   final double verticalPadding = 25.0;
 
   List entities = [
-    ['Productos', Icons.fastfood, '/admins/products'],
-    ['Pedidos', Icons.shopping_cart_outlined, '/admins/orders'],
+    ['Productos', Icons.fastfood, '/admins/home/2/products'],
+    ['Pedidos', Icons.shopping_cart_outlined, '/admins/home/2/orders'],
     // ['Promociones', Icons.local_offer_outlined, '/admins/discounts'],
   ];
 

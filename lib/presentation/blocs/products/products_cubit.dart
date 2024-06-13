@@ -38,14 +38,35 @@ class ProductsCubit extends Cubit<ProductsFormState> {
 
       final bool isPosted = await _postProduct(producto);
 
-      if (isPosted) {
-        emit(state.copyWith(formStatus: FormStatus.submissionSuccess));
+      if (isPosted == true) {
+        emit(state.copyWith(formStatus: FormStatus.created));
         if (context.mounted) context.pop();
       } else {
         emit(state.copyWith(formStatus: FormStatus.submissionFailure));
       }
     } catch (e) {
       emit(state.copyWith(formStatus: FormStatus.invalid));
+    }
+  }
+
+  Future<bool> deleteProduct(Producto product) async {
+    final request = ApiRequest(
+      data: null,
+      methodType: 'delete',
+      endpoint: '/Productos/${product.nombre}',
+    );
+
+    try {
+      emit(state.copyWith(formStatus: FormStatus.deleting));
+      final Response response = await request.request();
+      emit(state.copyWith(formStatus: FormStatus.deleted));
+      return response.data != null;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return false;
+      } else {
+        rethrow;
+      }
     }
   }
 
@@ -60,6 +81,7 @@ class ProductsCubit extends Cubit<ProductsFormState> {
     try {
       emit(state.copyWith(formStatus: FormStatus.posting));
       final Response response = await request.request();
+      print(response);
       emit(state.copyWith(formStatus: FormStatus.valid));
       return response.data != null;
     } on DioException catch (e) {

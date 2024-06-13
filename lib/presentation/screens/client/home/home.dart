@@ -277,7 +277,7 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
                           cantidad: cantidadventa,
                           subtotal: subTotal,
                           producto: widget.contexto.producto);
-                      ref.read(detallesPedidoProvider.notifier)
+                          ref.read(detallesPedidoProvider.notifier)
                           .agregarDetalle(detallePedido);
                       Navigator.pop(context);
                     },

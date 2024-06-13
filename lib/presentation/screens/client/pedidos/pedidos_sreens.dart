@@ -226,14 +226,12 @@ class _DetallePedidoReelViewState extends State<_DetallePedidoReelView> {
                       height: ScreenSize.screenHeight * 0.12,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        //TODO implementar fotos de la base de datos
                         child: Image(
                           image:  widget.listaVentas[index].producto.img,
                           fit: BoxFit.cover, //Imagen adaptativa
                         ),
                       ),
                     ),
-                    // TODO: implementar los pedidos por base de datos
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                       child: Row(

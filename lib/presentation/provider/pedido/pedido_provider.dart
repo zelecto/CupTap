@@ -33,7 +33,6 @@ Future<List<Pedido>> consultaPedido(ConsultaPedidoRef ref,String cedula) async {
 @Riverpod(keepAlive: false)
 int numeroPedido (NumeroPedidoRef ref) {
   final List<Pedido> listaPedido = ref.watch(pedidoEstadoProvider);
-  print(listaPedido.length);
   return listaPedido.length;
 }
 

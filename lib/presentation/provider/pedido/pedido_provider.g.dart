@@ -156,7 +156,7 @@ class _ConsultaPedidoProviderElement
   String get cedula => (origin as ConsultaPedidoProvider).cedula;
 }
 
-String _$numeroPedidoHash() => r'27a2b40d53d19c205488f1007b03a685074a677e';
+String _$numeroPedidoHash() => r'e94d44984b8a643377928b848c81f2081919fde7';
 
 /// See also [numeroPedido].
 @ProviderFor(numeroPedido)

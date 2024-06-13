@@ -7,7 +7,6 @@ import 'package:cutap/presentation/widgets/admin/Managment/products/search_bar.d
 import 'package:cutap/utils/api/api_request.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -18,7 +17,6 @@ Future<List<Producto>> fetchProductos() async {
   final productos = List<Producto>.from(
       response.data['data'].map((producto) => Producto.fromJson(producto)));
 
-  print(productos.toString());
   return productos;
 }
 
@@ -31,6 +29,7 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductsScreen> {
   List<Producto> productos = [];
+  bool isLoading = false; // Añade esta línea
 
   @override
   void initState() {
@@ -39,8 +38,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Future<void> loadProductos() async {
+    setState(() {
+      isLoading = true; // Comienza la carga
+    });
+    print('hola mundo');
     productos = await fetchProductos();
-    setState(() {});
+    setState(() {
+      isLoading = false; // Termina la carga
+    });
   }
 
   void _openButtonTapped() {
@@ -54,11 +59,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
           maxChildSize: 0.8,
           minChildSize: 0.1,
           builder: (context, scrollController) {
-            return BlocProvider<ProductsCubit>(
-              create: (context) => ProductsCubit(),
-              child: CreateProductView(
-                scrollController: scrollController,
-              ),
+            return CreateProductView(
+              scrollController: scrollController,
             );
           },
         );
@@ -68,20 +70,30 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final formStatusWatcher = context.watch<ProductsCubit>();
+
     return BlocListener<ProductsCubit, ProductsFormState>(
         listener: (context, state) {
-          if (state.formStatus == FormStatus.submissionSuccess) {
-            // Actualiza la lista de productos
-            loadProductos();
+          print(state);
+          if (formStatusWatcher.state.formStatus == FormStatus.created ||
+              formStatusWatcher.state.formStatus == FormStatus.deleted) {
+            // Realiza la operación asíncrona primero
+            loadProductos().then((_) {
+              // Luego, actualiza el estado de manera sincrónica
+              setState(() {
+                // Aquí va tu código para actualizar el estado
+              });
+            });
           }
         },
         child: Scaffold(
           backgroundColor: const Color(0xFFF8F9FA),
-          appBar: const CustomAppBar(
+          appBar: CustomAppBar(
             title: 'Tus productos',
             showAction: true,
-            bgColor: Color(0xFFF8F9FA),
-            actionText: Text(
+            bgColor: const Color(0xFFF8F9FA),
+            onTap: () => loadProductos(),
+            actionText: const Text(
               'Guardar',
               style: TextStyle(
                   fontSize: 14,
@@ -104,12 +116,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       child: Container(
                         decoration:
                             const BoxDecoration(color: Colors.transparent),
-                        child: ListView.builder(
-                            itemCount: productos.length,
-                            itemBuilder: (context, index) {
-                              final producto = productos[index];
-                              return ProductosCard(producto: producto);
-                            }),
+                        child:
+                            isLoading // Si está cargando, muestra un skeleton
+                                ? const Center(
+                                    child:
+                                        CircularProgressIndicator()) // Reemplaza esto con tu widget de skeleton
+                                : ListView.builder(
+                                    // Si no está cargando, muestra la lista
+                                    itemCount: productos.length,
+                                    itemBuilder: (context, index) {
+                                      final producto = productos[index];
+                                      return ProductosCard(producto: producto);
+                                    }),
                       ),
                     ),
                     InkWell(

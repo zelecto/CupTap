@@ -1,6 +1,9 @@
 part of 'products_cubit.dart';
 
 enum FormStatus {
+  created,
+  deleting,
+  deleted,
   invalid,
   valid,
   validating,

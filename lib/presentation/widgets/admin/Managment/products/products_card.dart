@@ -1,6 +1,9 @@
 import 'package:cutap/domain/models/modelos.dart';
+import 'package:cutap/presentation/blocs/products/products_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 
@@ -10,6 +13,11 @@ class ProductosCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void deleteProduct(Producto producto) async {
+      await context.read<ProductsCubit>().deleteProduct(producto);
+      if (context.mounted) context.pop();
+    }
+
     return Padding(
         padding: const EdgeInsets.all(24),
         child: Container(
@@ -140,8 +148,8 @@ class ProductosCard extends StatelessWidget {
                                       Container(
                                         width: 300,
                                         child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
+                                          onPressed: () async {
+                                            deleteProduct(producto);
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
@@ -153,7 +161,8 @@ class ProductosCard extends StatelessWidget {
                                           ),
                                           child: const Padding(
                                             padding: EdgeInsets.symmetric(
-                                                horizontal: 16.0, vertical: 16.0),
+                                                horizontal: 16.0,
+                                                vertical: 16.0),
                                             child: Text(
                                               'Volver',
                                               style: TextStyle(

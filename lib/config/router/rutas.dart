@@ -3,6 +3,7 @@ import 'package:cutap/presentation/blocs/products/products_cubit.dart';
 import 'package:cutap/presentation/blocs/register/register_cubit.dart';
 import 'package:cutap/presentation/screens/admin/orders_screen.dart';
 import 'package:cutap/presentation/screens/client/account/account.dart';
+import 'package:cutap/presentation/views/admin/create_products_view.dart';
 import 'package:cutap/presentation/widgets/client/barra_navegacion.dart';
 import 'package:cutap/presentation/screens/admin/home_screen.dart';
 import 'package:cutap/presentation/screens/admin/products_screen.dart';
@@ -14,10 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 Widget _buildEntityScreen(String tipo) {
   switch (tipo) {
     case 'products':
-      return BlocProvider<ProductsCubit>(
-        create: (context) => ProductsCubit(),
-        child: const ProductsScreen(),
-      );
+      return const ProductsScreen();
     case 'orders':
       return const OrdersScreen();
     default:
@@ -46,15 +44,19 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final pageIndex = int.parse(state.pathParameters['page'] ?? '0');
 
-        return HomeScreen(pageIndex: pageIndex);
+        return HomeScreen(
+          pageIndex: pageIndex,
+        );
       },
-    ),
-    GoRoute(
-      path: '/admins/:entity',
-      builder: (context, state) {
-        final entity = state.pathParameters['entity'] ?? "";
-        return _buildEntityScreen(entity);
-      },
+      routes: [
+        GoRoute(
+          path: ':entity',
+          builder: (context, state) {
+            final entity = state.pathParameters['entity'] ?? "";
+            return _buildEntityScreen(entity);
+          },
+        ),
+      ],
     ),
     GoRoute(
       path: '/home',

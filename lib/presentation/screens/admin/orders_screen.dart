@@ -1,15 +1,23 @@
 import 'package:cutap/domain/models/modelos.dart';
 import 'package:cutap/presentation/views/admin/create_order.dart';
-import 'package:cutap/presentation/views/admin/create_products_view.dart';
 import 'package:cutap/presentation/widgets/admin/Home/pedidos_card.dart';
 import 'package:cutap/presentation/widgets/admin/Managment/products/custom_appbar.dart';
-import 'package:cutap/presentation/widgets/admin/Managment/products/products_card.dart';
 import 'package:cutap/presentation/widgets/admin/Managment/products/search_bar.dart';
 import 'package:cutap/utils/api/api_request.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iconsax/iconsax.dart';
+
+Future<List<Pedido>> fetchPedidosss() async {
+  final request =
+      ApiRequest(methodType: 'get', endpoint: '/Pedidos', data: null);
+  final Response response = await request.request();
+  final pedidos = List<Pedido>.from(
+      response.data['data'].map((pedido) => Pedido.fromJson(pedido)));
+
+  return pedidos;
+}
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -19,129 +27,24 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  // Datos de ejemplo para Usuario, Detalle y Estado
-  Usuario usuarioAleatorio = Usuario(
-    cedula: '12345678',
-    nombre: 'NombreAleatorio',
-    apellidos: 'ApellidosAleatorios',
-    telefono: '1234567890',
-    username: 'usuarioAleatorio',
-    password: 'contraseñaAleatoria',
-  );
-  
-  List<Pedido> pedidos = [
-    Pedido(
-      id: 1,
-      fechaRegistro: DateTime.now(),
-      total: 3000.0,
-      usuario: Usuario(
-        cedula: '12345678',
-        nombre: 'NombreAleatorio',
-        apellidos: 'ApellidosAleatorios',
-        telefono: '1234567890',
-        username: 'usuarioAleatorio',
-        password: 'contraseñaAleatoria',
-      ),
-      detalles: [
-        Detalle(
-          id: 1,
-          cantidad: 2,
-          subtotal: 2000.0,
-          valorDescontado: 0.0,
-          promocionAplicada: null,
-          producto: Producto(
-            nombre: 'ProductoAleatorio',
-            descripcion: 'Este es un producto aleatorio',
-            precio: 100.0,
-            stock: 10,
-            ventaActiva: true,
-            promocion: null,
-            fechaRegistro: DateTime.now(),
-            imagen: null,
-          ),
-          fechaRegistro: DateTime.now(),
-        )
-      ],
-      estado: Estado(
-        fechaRegistro: DateTime.now(),
-        nombre: 'EstadoAleatorio',
-      ),
-    ),
-    Pedido(
-      id: 2,
-      fechaRegistro: DateTime.now(),
-      total: 4000.0,
-      usuario: Usuario(
-        cedula: '12345678',
-        nombre: 'NombreAleatorio',
-        apellidos: 'ApellidosAleatorios',
-        telefono: '1234567890',
-        username: 'usuarioAleatorio',
-        password: 'contraseñaAleatoria',
-      ),
-      detalles: [
-        Detalle(
-          id: 1,
-          cantidad: 2,
-          subtotal: 2000.0,
-          valorDescontado: 0.0,
-          promocionAplicada: null,
-          producto: Producto(
-            nombre: 'ProductoAleatorio',
-            descripcion: 'Este es un producto aleatorio',
-            precio: 100.0,
-            stock: 10,
-            ventaActiva: true,
-            promocion: null,
-            fechaRegistro: DateTime.now(),
-            imagen: null,
-          ),
-          fechaRegistro: DateTime.now(),
-        )
-      ],
-      estado: Estado(
-        fechaRegistro: DateTime.now(),
-        nombre: 'EstadoAleatorio',
-      ),
-    ),
-    Pedido(
-      id: 3,
-      fechaRegistro: DateTime.now(),
-      total: 5000.0,
-      usuario: Usuario(
-        cedula: '12345678',
-        nombre: 'NombreAleatorio',
-        apellidos: 'ApellidosAleatorios',
-        telefono: '1234567890',
-        username: 'usuarioAleatorio',
-        password: 'contraseñaAleatoria',
-      ),
-      detalles: [
-        Detalle(
-          id: 1,
-          cantidad: 2,
-          subtotal: 2000.0,
-          valorDescontado: 0.0,
-          promocionAplicada: null,
-          producto: Producto(
-            nombre: 'ProductoAleatorio',
-            descripcion: 'Este es un producto aleatorio',
-            precio: 100.0,
-            stock: 10,
-            ventaActiva: true,
-            promocion: null,
-            fechaRegistro: DateTime.now(),
-            imagen: null,
-          ),
-          fechaRegistro: DateTime.now(),
-        )
-      ],
-      estado: Estado(
-        fechaRegistro: DateTime.now(),
-        nombre: 'EstadoAleatorio',
-      ),
-    ),
-  ];
+  List<Pedido> pedidos = [];
+  bool isLoading = false; // Añade esta línea
+
+  @override
+  void initState() {
+    super.initState();
+    loadPedidos();
+  }
+
+  Future<void> loadPedidos() async {
+    setState(() {
+      isLoading = true; // Comienza la carga
+    });
+    pedidos = await fetchPedidosss();
+    setState(() {
+      isLoading = false; // Comienza la carga
+    });
+  }
 
   void _openButtonTapped() {
     showModalBottomSheet(
@@ -192,12 +95,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(color: Colors.transparent),
-                    child: ListView.builder(
-                        itemCount: pedidos.length,
-                        itemBuilder: (context, index) {
-                          final pedido = pedidos[index];
-                          return PedidosCard(pedido: pedido);
-                        }),
+                    child:
+                        isLoading // Comprueba si se están cargando los pedidos
+                            ? const Center(
+                                child:
+                                    CircularProgressIndicator()) // Muestra el spinner de carga
+                            : ListView.builder(
+                                // Muestra la lista de pedidos
+                                itemCount: pedidos.length,
+                                itemBuilder: (context, index) {
+                                  final pedido = pedidos[index];
+                                  return PedidosCard(pedido: pedido);
+                                }),
                   ),
                 ),
                 InkWell(

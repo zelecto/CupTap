@@ -5,10 +5,18 @@ import 'package:intl/intl.dart';
 
 class PedidosCard extends StatelessWidget {
   final Pedido pedido;
-  final bool? isSold;
 
-  const PedidosCard(
-      {super.key, required this.pedido, this.isSold = true});
+  const PedidosCard({super.key, required this.pedido});
+
+  Color getColor(String estado) {
+    if (estado == 'Realizado') {
+      return Colors.green;
+    } else if (estado == 'Pendiente') {
+      return Colors.orange;
+    } else {
+      return Colors.black87;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +46,13 @@ class PedidosCard extends StatelessWidget {
                           fontWeight: FontWeight.w600),
                     ),
                     Text(
-                      NumberFormat.currency(symbol: 'COP\$', decimalDigits: 0)
-                          .format(pedido.total),
-                      style: TextStyle(
+                        NumberFormat.currency(symbol: 'COP\$', decimalDigits: 0)
+                            .format(pedido.total),
+                        style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 19,
-                          color: isSold! ? Colors.green : Colors.black87),
-                    )
+                          color: getColor(pedido.estado.nombre),
+                        ))
                   ],
                 ),
               ),
@@ -66,10 +74,12 @@ class PedidosCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      isSold! ? 'Vendido' : pedido.estado.nombre,
+                      pedido.estado.nombre == 'Realizado'
+                          ? pedido.estado.nombre
+                          : 'Pendiente',
                       style: TextStyle(
                           fontSize: 13,
-                          color: isSold! ? Colors.green : Colors.amber[800],
+                          color: getColor(pedido.estado.nombre),
                           fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -86,8 +96,8 @@ class PedidosCard extends StatelessWidget {
               child: SizedBox(
                 height: 60,
                 width: 60,
-                child: Image.network(
-                  'https://www.goya.com/media/4112/baked-apple-empanadas.jpg?quality=80',
+                child: Image(
+                  image: pedido.detalles[0].producto.imagen,
                   fit: BoxFit.fill,
                 ),
               ),

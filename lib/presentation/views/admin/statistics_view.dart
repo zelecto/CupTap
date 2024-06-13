@@ -35,8 +35,9 @@ class _StatisticsViewState extends State<StatisticsView> {
 
   void calculateProductosMasVendidos() {
     Map<String, int> productosMasVendidos = {};
-    List<Pedido> pedidosRealizados = pedidos.where((pedido) => pedido.estado == 'Realizado').toList();
-  
+    List<Pedido> pedidosRealizados =
+        pedidos.where((pedido) => pedido.estado.nombre == 'Realizado').toList();
+
     // for (var pedido in pedidosRealizados) {
     //   for (var producto in pedido.productos) {
     //     if (productosMasVendidos.containsKey(producto.nombre)) {

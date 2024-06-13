@@ -1,12 +1,50 @@
+import 'package:cutap/domain/models/producto/producto.dart';
+import 'package:cutap/presentation/widgets/client/inputs/admins_form_input.dart';
+import 'package:cutap/utils/api/api_request.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
-class CreateOrderView extends StatelessWidget {
+Future<List<Producto>> fetchProductos() async {
+  final request =
+      ApiRequest(methodType: 'get', endpoint: '/Productos', data: null);
+  final Response response = await request.request();
+  final productos = List<Producto>.from(
+      response.data['data'].map((producto) => Producto.fromJson(producto)));
+
+  return productos;
+}
+
+class CreateOrderView extends StatefulWidget {
   final ScrollController scrollController;
   const CreateOrderView({super.key, required this.scrollController});
+
+  @override
+  State<CreateOrderView> createState() => _CreateOrderViewState();
+}
+
+class _CreateOrderViewState extends State<CreateOrderView> {
+  List<Producto> productos = [];
+  String dropdownValue = 'Empanada'; // Inicializa con un valor de tu lista
+
+  @override
+  void initState() {
+    super.initState();
+    loadProductos();
+  }
+
+  Future<void> loadProductos() async {
+    productos = await fetchProductos();
+    if (mounted) {
+      // Comprueba si el widget todavía está montado
+      setState(() {
+        dropdownValue = (productos.isNotEmpty ? productos[0].nombre : null)!;
+      });
+    }
+  }
 
   void _createButtonTapped() {}
 
@@ -39,37 +77,9 @@ class CreateOrderView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Nombre del cliente',
-                      style: GoogleFonts.inter(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 15),
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                          color: const Color(0xFFFFFFFF),
-                          borderRadius: BorderRadius.circular(12)),
-                      child: const Row(
-                        children: [
-                          SizedBox(width: 16),
-                          Text(
-                            'Nathan Ospino',
-                            style: TextStyle(
-                                color: Color(0xFF6A6A6A),
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      ))
-                ],
-              ),
-            ),
-            const SizedBox(height: 32),
+            AdminCustomInput(
+                hint: 'Nathan Ospino', title: 'Nombre del cliente'),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: Column(
@@ -80,25 +90,37 @@ class CreateOrderView extends StatelessWidget {
                           fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 15),
                   Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 60,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                          color: const Color(0xFFFFFFFF),
-                          borderRadius: BorderRadius.circular(12)),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Empanada',
-                            style: TextStyle(
-                                color: Color(0xFF6A6A6A),
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Icon(Icons.keyboard_arrow_down)
-                        ],
-                      ))
+                    width: MediaQuery.of(context).size.width,
+                    height: 60,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                        color: const Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: dropdownValue,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownValue = newValue ?? '';
+                          });
+                        },
+                        items: productos
+                            .map<DropdownMenuItem<String>>((Producto producto) {
+                          return DropdownMenuItem<String>(
+                            value: producto.nombre,
+                            child: Text(
+                              producto.nombre,
+                              style: TextStyle(
+                                  color: Color(0xFF6A6A6A),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

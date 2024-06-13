@@ -1,40 +1,50 @@
-import 'package:cutap/domain/models/modelos.dart';
+import 'dart:typed_data';
+import 'package:cutap/presentation/blocs/products/products_cubit.dart';
+import 'package:cutap/presentation/widgets/client/inputs/admins_form_input.dart';
+import 'package:cutap/utils/image_converter/file_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateProductView extends StatefulWidget {
   final ScrollController scrollController;
-  final void Function(Producto) onProductCreated;
-  const CreateProductView(
-      {super.key,
-      required this.scrollController,
-      required this.onProductCreated});
+  const CreateProductView({
+    super.key,
+    required this.scrollController,
+  });
 
   @override
   State<CreateProductView> createState() => _CreateProductViewState();
 }
 
 class _CreateProductViewState extends State<CreateProductView> {
-  void _createButtonTapped() {
-    Producto nuevoProducto = Producto(
-      nombre: 'prueba',
-      precio: 20.000,
-      stock: 20,
-      ventaActiva: true,
-      fechaRegistro: DateTime.now(),
-      imagen: null,
-    );
+  XFile? _selectedImage;
+  Uint8List? _imageBytes;
 
-    // Llamar a la función de callback
-    widget.onProductCreated(nuevoProducto);
-    context.pop();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (_selectedImage != null) {
+        _imageBytes = await convertImageToBytes(_selectedImage!);
+        if (mounted) {
+          context.read<ProductsCubit>().imagenChanged(_imageBytes);
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final productsCubit = context.watch<ProductsCubit>();
+    final nombre = productsCubit.state.nombre;
+    final cantidad = productsCubit.state.cantidad;
+    final precio = productsCubit.state.precio;
+    final isValid = productsCubit.state.isValid;
+    final formStatus = productsCubit.state.formStatus;
+
     return Container(
       decoration: const BoxDecoration(
           color: Color.fromARGB(255, 240, 239, 239),
@@ -62,110 +72,31 @@ class _CreateProductViewState extends State<CreateProductView> {
               ),
             ),
             const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Nombre',
-                      style: GoogleFonts.inter(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 15),
-                  Container(
-                    height: 80,
-                    decoration: const BoxDecoration(color: Colors.transparent),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Colors.white),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Colors.white),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        errorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red),
-                        ),
-                        hintText: 'Empanada',
-                      ),
-                    ),
-                  )
-                ],
-              ),
+            //Input del nombre
+            AdminCustomInput(
+              hint: 'Empanada',
+              title: 'Nombre',
+              onChanged: productsCubit.nombreChanged,
+              errorMessage: nombre.getErrorMessage,
             ),
             const SizedBox(height: 24),
             Row(
               children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Cantidad',
-                          style: GoogleFonts.inter(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 15),
-                      Container(
-                        height: 60,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Colors.white),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Colors.white),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            errorBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            hintText: '10',
-                          ),
-                        ),
-                      )
-                    ],
+                  child: AdminCustomInput(
+                    title: 'Cantidad',
+                    hint: '10',
+                    onChanged: productsCubit.cantidadChanged,
+                    errorMessage: cantidad.getErrorMessage,
                   ),
                 ),
                 const SizedBox(width: 16), // Espacio entre los dos inputs
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Precio',
-                          style: GoogleFonts.inter(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 15),
-                      Container(
-                        height: 60,
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Colors.white),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Colors.white),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            errorBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            hintText: '10.000COP',
-                          ),
-                        ),
-                      )
-                    ],
+                  child: AdminCustomInput(
+                    title: 'Precio',
+                    hint: '10.000COP',
+                    onChanged: productsCubit.precioChanged,
+                    errorMessage: precio.getErrorMessage,
                   ),
                 ),
               ],
@@ -189,17 +120,22 @@ class _CreateProductViewState extends State<CreateProductView> {
                         decoration: BoxDecoration(
                             color: const Color(0xFFFFFFFF),
                             borderRadius: BorderRadius.circular(12)),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Carga aqui',
-                              style: TextStyle(
-                                  color: Color(0xFF6A6A6A),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
+                              _selectedImage != null
+                                  ? (_selectedImage!.name.length > 10
+                                      ? '${_selectedImage!.name.substring(0, 15)}...'
+                                      : _selectedImage!.name)
+                                  : 'Carga aqui',
+                              style: const TextStyle(
+                                color: Color(0xFF6A6A6A),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            Icon(Icons.upload_file_rounded)
+                            const Icon(Icons.upload_file_rounded)
                           ],
                         )),
                   )
@@ -208,33 +144,47 @@ class _CreateProductViewState extends State<CreateProductView> {
             ),
             const SizedBox(height: 32),
             InkWell(
-              onTap: _createButtonTapped,
+              onTap: isValid ? () => productsCubit.onSubmit(context) : null,
               child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 70,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                      color: const Color(0xFF0066FF),
+                      color: formStatus == FormStatus.posting
+                          ? const Color.fromARGB(255, 0, 66, 165)
+                          : const Color(0xFF0066FF),
                       borderRadius: BorderRadius.circular(16)),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Agregar producto',
+                      const Text('Agregar producto',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.w600)),
-                      SizedBox(
-                        width: 2,
+                      const SizedBox(
+                        width: 5,
                       ),
-                      Icon(
-                        Iconsax.add,
-                        color: Colors.white,
-                        weight: 2,
-                      ),
+                      formStatus == FormStatus.posting
+                          ? const SizedBox(
+                              height: 15,
+                              width: 15,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Icon(
+                              Iconsax.add,
+                              color: Colors.white,
+                              weight: 2,
+                            ),
                     ],
                   )),
             ),
+            const SizedBox(
+              height: 10,
+            )
           ],
         ),
       ),
@@ -242,6 +192,17 @@ class _CreateProductViewState extends State<CreateProductView> {
   }
 
   Future _pickImageFromGallery() async {
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (returnedImage != null) {
+      _selectedImage = returnedImage;
+      _imageBytes = await convertImageToBytes(_selectedImage!);
+      context.read<ProductsCubit>().imagenChanged(_imageBytes);
+    }
+
+    setState(() {
+      _selectedImage = returnedImage;
+    });
   }
 }

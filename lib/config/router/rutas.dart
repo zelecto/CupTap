@@ -1,4 +1,5 @@
 import 'package:cutap/presentation/blocs/login/login_cubit.dart';
+import 'package:cutap/presentation/blocs/products/products_cubit.dart';
 import 'package:cutap/presentation/blocs/register/register_cubit.dart';
 import 'package:cutap/presentation/screens/admin/orders_screen.dart';
 import 'package:cutap/presentation/screens/client/account/account.dart';
@@ -13,10 +14,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 Widget _buildEntityScreen(String tipo) {
   switch (tipo) {
     case 'products':
-      return const ProductsScreen();
+      return BlocProvider<ProductsCubit>(
+        create: (context) => ProductsCubit(),
+        child: const ProductsScreen(),
+      );
     case 'orders':
-    return const OrdersScreen();
-    default: 
+      return const OrdersScreen();
+    default:
       return Container();
   }
 }

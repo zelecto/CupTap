@@ -20,7 +20,7 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
   bool isLoading=false;
 
   Future<void> postPedido(Pedido pedido) async {
-    try {
+    
       ApiRequest apiRequest = ApiRequest(
         methodType: "post",
         endpoint: "/Pedidos",
@@ -33,14 +33,11 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
 
       final response = await apiRequest.request(); // Esperar la respuesta de la solicitud HTTP
       print(response);
-
       if (response.statusCode == 200 && response.data["success"]) {
         ref.invalidate(consultaProductosProvider);
         ref.invalidate(detallesPedidoProvider);
       }
-    } catch (e) {
-
-    }
+    
     
   }
 

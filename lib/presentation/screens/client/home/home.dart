@@ -57,7 +57,6 @@ class HomeState extends ConsumerState<Home> {
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return _MyCardProducto(
-                          imgUrl: imgDefault[index],
                           producto: listaProductos[index],
                         );
                       },
@@ -75,11 +74,9 @@ class HomeState extends ConsumerState<Home> {
 }
 
 class _MyCardProducto extends ConsumerStatefulWidget {
-  final String imgUrl;
   final Producto producto;
 
   const _MyCardProducto({
-    required this.imgUrl,
     required this.producto,
   });
 
@@ -118,8 +115,8 @@ class MyCardProductoState extends ConsumerState<_MyCardProducto> {
               height: ScreenSize.screenHeight * 0.18,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                  widget.imgUrl,
+                child: Image(
+                  image: widget.producto.img,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -220,8 +217,8 @@ class AgregarDetalleViewState extends ConsumerState<_AgregarDetalleView> {
               width: ScreenSize.screenWidth * 0.3,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                  widget.contexto.imgUrl,
+                child: Image(
+                  image:  widget.contexto.producto.img,
                   fit: BoxFit.cover,
                 ),
               ),

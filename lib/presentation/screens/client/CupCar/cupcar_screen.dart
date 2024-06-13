@@ -20,7 +20,6 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
   bool isLoading=false;
 
   Future<void> postPedido(Pedido pedido) async {
-    print(pedido.toString());
     try {
       ApiRequest apiRequest = ApiRequest(
         methodType: "post",
@@ -110,26 +109,16 @@ class CupCarScreenState extends ConsumerState<CupCarScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              FilledButton(
-                                onPressed: () {},
-                                child: const Text("RESERVAR"),
-                              ),
-                              const Spacer(),
-                              FilledButton(
-                                //TODO: IMPLEMENTACION DE GUARDADO DE PEDIDO
-                                onPressed: () async {
-                                  Pedido pedido = Pedido(
-                                      detalles: listaDetalles,
-                                      estado:
-                                          EstadoPedido(nombre: "Pendiente"));
-                                  await postPedido(pedido);
-                                  
-                                },
-                                child: const Text("PAGAR"),
-                              ),
-                            ],
+                          child: FilledButton(
+                            onPressed: () async {
+                              Pedido pedido = Pedido(
+                                  detalles: listaDetalles,
+                                  estado:
+                                      EstadoPedido(nombre: "Pendiente"));
+                              await postPedido(pedido);
+                              
+                            },
+                            child: const Text("Ordenar"),
                           ),
                         ),
                       ]),
@@ -173,11 +162,10 @@ class _MyCardPedido extends ConsumerWidget {
               child: SizedBox(
                 width: ScreenSize.screenWidth * 0.40,
                 height: ScreenSize.screenHeight * 0.15,
-                //TODO: Implementra imagenes
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                      "https://i.ytimg.com/vi/m3acCpS4DJg/maxresdefault.jpg",
+                  child: Image(
+                      image:  detallePedido.producto.img,
                       fit: BoxFit.cover),
                 ),
               ),

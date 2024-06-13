@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 Producto productoFromJson(String str) => Producto.fromJson(json.decode(str));
 
 String productoToJson(Producto data) => json.encode(data.toJson());
@@ -10,7 +12,7 @@ class Producto {
   double precio;
   int stock;
   bool ventaActiva;
-  String? imgUrl;
+  dynamic img;
 
   Producto(
       {required this.nombre,
@@ -18,7 +20,7 @@ class Producto {
       required this.precio,
       required this.stock,
       required this.ventaActiva,
-      this.imgUrl = "No hay imagen"});
+      this.img = "No hay imagen"});
 
   factory Producto.fromJson(Map<String, dynamic> json) => Producto(
         nombre: json["nombre"],
@@ -26,7 +28,9 @@ class Producto {
         precio: json["precio"]?.toDouble(),
         stock: json["stock"],
         ventaActiva: json["venta_activa"],
-        imgUrl: json["imagen"],
+        img: json["imagen"] != null
+            ? MemoryImage(base64Decode(json["imagen"]))
+            : null,
     );
 
     Map<String, dynamic> toJson() => {
@@ -35,7 +39,7 @@ class Producto {
         "precio": precio,
         "stock": stock,
         "venta_activa": ventaActiva,
-        "imagen": imgUrl,
+        "imagen": img,
     };
     Map<String, dynamic> toJsonPedido() => {
         "nombre": nombre,

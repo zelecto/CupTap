@@ -36,7 +36,7 @@ class Pedido {
       );
 
   Map<String, dynamic> toJson() => {
-        "usuario": {"cedula": "1003238420"},
+        "usuario": {"cedula": "1067591312"},
         "estado": estado.toJson(),
         "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
       };

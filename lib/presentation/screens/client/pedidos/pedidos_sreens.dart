@@ -20,7 +20,7 @@ class PedidosScreenState extends ConsumerState<PedidosScreen> {
   @override
   Widget build(BuildContext context) {
     //TODO IMPLEMENTAR USUARIO
-    final pedidoAsync = ref.watch(consultaPedidoProvider("1003238420"));
+    final pedidoAsync = ref.watch(consultaPedidoProvider("1067591312"));
     return Scaffold(
         appBar: crearAppbar("Pedidos",context),
         body: pedidoAsync.when(

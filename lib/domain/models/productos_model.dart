@@ -1,4 +1,6 @@
+import "dart:convert";
 import "package:cutap/domain/models/modelos.dart";
+import "package:flutter/material.dart";
 
 class Producto {
   final String nombre;
@@ -31,7 +33,9 @@ class Producto {
             ? Promocion.fromJson(json["promocion"])
             : null,
         fechaRegistro: DateTime.parse(json["fechaRegistro"]),
-        imagen: json["imagen"],
+        imagen: json["imagen"] != null
+            ? MemoryImage(base64Decode(json["imagen"]))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -40,8 +44,22 @@ class Producto {
         "precio": precio,
         "stock": stock,
         "venta_activa": ventaActiva,
-        "promocion": promocion!.toJson(),
+        "promocion": promocion?.toJson(),
         "fechaRegistro": fechaRegistro.toIso8601String(),
         "imagen": imagen,
       };
+
+  @override
+  String toString() {
+    return 'Producto { '
+        'nombre: $nombre, '
+        'descripcion: ${descripcion ?? "N/A"}, '
+        'precio: $precio, '
+        'stock: $stock, '
+        'ventaActiva: ${ventaActiva ? "Sí" : "No"}, '
+        'promocion: ${promocion != null ? promocion.toString() : "N/A"}, '
+        'fechaRegistro: ${fechaRegistro.toIso8601String()}, '
+        'imagen: ${imagen != null ? "Presente" : "Ausente"} '
+        '}';
+  }
 }
